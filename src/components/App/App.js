@@ -13,7 +13,7 @@ class App extends React.Component {
         { name: 'Track2', artist: 'artist2', album: 'album2', id: 2 },
         { name: 'Track3', artist: 'artist3', album: 'album3', id: 3 }
       ],
-      playlistName: '',
+      playlistName: 'New Playlist',
       playlistTracks: [],
       error: null
     }
@@ -32,6 +32,10 @@ class App extends React.Component {
     this.setState({ playlistTracks: updatedPlaylistTracks })
   }
 
+  changePlaylistName = (updatedPlaylistName) => {
+    this.setState({ playlistName: updatedPlaylistName })
+  }
+
   render() {
     return (
       <div className="App">
@@ -39,7 +43,7 @@ class App extends React.Component {
         <SearchBar />
         <div className="SongsListsContainer">
           <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
-          <Playlist playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} />
+          <Playlist playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} playlistName={this.state.playlistName} onNameChange={this.changePlaylistName} />
         </div>
       </div>
     )

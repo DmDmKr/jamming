@@ -1,9 +1,10 @@
 .App {
   text-align: center;
   background-color: #535bcc;
-  background-image: url('./background_picture.jpg');
+  background-image: url('./background_photo_desktop.jpg');
   background-size: cover;
   background-position: center;
+  min-height: 100vh; /*to the whole viewport*/
 }
 
 h1 {
@@ -12,4 +13,9 @@ h1 {
   font-family: Poppins, sans-serif;
   font-size: 2rem;
   color: white;
+}
+
+.SongsListsContainer {
+  display: flex;
+  justify-content: center;
 }

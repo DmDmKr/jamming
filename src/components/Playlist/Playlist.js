@@ -13,14 +13,24 @@ class Playlist extends React.Component {
     this.props.onNameChange(trimmedName)
   }
 
+  handlePlaylistSave = (event) => {
+    event.preventDefault()
+    this.props.onPlaylistSave(this.props.playlistTracks)
+  }
+
   render() {
+    const { playlistName, playlistTracks } = this.props
+    const isSaveDisabled = playlistTracks.length === 0
+
     return (
       <div className="Playlist">
         <div className="Playlist-name-input-container">
-          <input placeholder={this.props.playlistName} onChange={this.handleNameChange} />
-          <TrackList tracks={this.props.playlistTracks} buttonType="playlist" onRemove={this.props.onRemove} />
-          <div className="Playlist-submit" /*onClick={this.handleSave}*/>
-            <a>Save to Spotify</a>
+          <input placeholder={playlistName} onChange={this.handleNameChange} />
+          <TrackList tracks={playlistTracks} buttonType="playlist" onRemove={this.props.onRemove} />
+          <div className="Playlist-submit">
+            <button onClick={this.handlePlaylistSave} disabled={isSaveDisabled}>
+              Save to Spotify
+            </button>
           </div>
         </div>
       </div>

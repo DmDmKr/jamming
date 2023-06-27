@@ -21,7 +21,7 @@
   outline: none;
 }
 
-.SearchBar a:hover {
+.SearchBar button:hover {
   background-color: rgba(108, 65, 233, 0.7);
 }
 
@@ -33,7 +33,7 @@
   text-align: center;
 }
 
-.SearchBar-submit a {
+.SearchBar-submit button {
   border-radius: 4px;
   padding: 0.72rem 1.7rem;
   background-color: #0b0ec4;
@@ -42,6 +42,6 @@
   transition: background-color 0.5s;
 }
 
-.SearchBar-submit a:hover {
+.SearchBar-submit button:hover {
   cursor: pointer;
 }

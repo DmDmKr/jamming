@@ -31,8 +31,7 @@
   text-align: center;
 }
 
-.Playlist-submit a {
-  border-radius: 4px;
+.Playlist-submit button {
   padding: 0.72rem 1.7rem;
   background-color: #0b0ec4;
   color: #ffffff;
@@ -40,6 +39,11 @@
   transition: background-color 0.5s;
 }
 
-.Playlist-submit a:hover {
+.Playlist-submit button:disabled {
+  background-color: #999999;
+  cursor: not-allowed;
+}
+
+.Playlist-submit button:enabled:hover {
   cursor: pointer;
 }

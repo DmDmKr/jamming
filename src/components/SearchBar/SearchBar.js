@@ -12,7 +12,7 @@ class SearchBar extends React.Component {
         <div className="SearchBar-input-container">
           <input placeholder="Search Spotify" /*onChange={this.handleTermChange} onKeyDown={this.handleEnterKeyPress} value={this.state.term} className={this.state.termValid ? '' : 'error'}*/ />
           <div className="SearchBar-submit" /*onClick={this.handleSearch}*/>
-            <a>Search</a>
+            <button>Search</button>
           </div>
         </div>
       </div>

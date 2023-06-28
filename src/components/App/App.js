@@ -3,6 +3,7 @@ import './App.css'
 import SearchBar from '../SearchBar/SearchBar'
 import SearchResults from '../SearchResults/SearchResults'
 import Playlist from '../Playlist/Playlist'
+import Spotify from '../../util/Spotify'
 
 class App extends React.Component {
   constructor(props) {
@@ -43,11 +44,25 @@ class App extends React.Component {
     })
   }
 
+  searchSpotify = (term) => {
+    Spotify.search(term)
+      .then((tracks) => {
+        if (tracks.length > 0) {
+          this.setState({ searchResults: tracks, error: null })
+        } else {
+          this.setState({ searchResults: null, error: 'No tracks found.' })
+        }
+      })
+      .catch((error) => {
+        this.setState({ searchResults: null, error: 'An error occurred while fetching data.' })
+      })
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Jamming</h1>
-        <SearchBar />
+        <SearchBar searchSpotify={this.searchSpotify} />
         <div className="SongsListsContainer">
           <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
           <Playlist playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} playlistName={this.state.playlistName} onNameChange={this.changePlaylistName} onPlaylistSave={this.savePlaylist} />

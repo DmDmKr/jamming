@@ -1,41 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './Playlist.css'
 import TrackList from '../Tracklist/Tracklist'
 
-class Playlist extends React.Component {
-  constructor(props) {
-    super(props)
-    this.handleNameChange = this.handleNameChange.bind(this)
+const Playlist = (props) => {
+  const [playlistName, setPlaylistName] = useState(props.playlistName)
+
+  useEffect(() => {
+    setPlaylistName(props.playlistName)
+  }, [props.playlistName])
+
+  const handleNameChange = (event) => {
+    const updatedName = event.target.value.trim()
+    setPlaylistName(updatedName)
+    props.onNameChange(updatedName)
   }
 
-  handleNameChange(event) {
-    const trimmedName = event.target.value.trim()
-    this.props.onNameChange(trimmedName)
-  }
-
-  handlePlaylistSave = (event) => {
+  const handlePlaylistSave = (event) => {
     event.preventDefault()
-    this.props.onPlaylistSave(this.props.playlistTracks)
+    props.onPlaylistSave(props.playlistTracks)
   }
 
-  render() {
-    const { playlistName, playlistTracks } = this.props
-    const isSaveDisabled = playlistTracks.length === 0
+  const isSaveDisabled = props.playlistTracks.length === 0 || playlistName === ''
 
-    return (
-      <div className="Playlist">
-        <div className="Playlist-name-input-container">
-          <input placeholder={playlistName} onChange={this.handleNameChange} />
-          <TrackList tracks={playlistTracks} buttonType="playlist" onRemove={this.props.onRemove} />
-          <div className="Playlist-submit">
-            <button onClick={this.handlePlaylistSave} disabled={isSaveDisabled}>
-              Save to Spotify
-            </button>
-          </div>
+  return (
+    <div className="Playlist">
+      <div className="Playlist-name-input-container">
+        <input placeholder={playlistName} onChange={handleNameChange} />
+        <TrackList tracks={props.playlistTracks} buttonType="playlist" onRemove={props.onRemove} />
+        <div className="Playlist-submit">
+          <button onClick={handlePlaylistSave} disabled={isSaveDisabled}>
+            Save to Spotify
+          </button>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default Playlist

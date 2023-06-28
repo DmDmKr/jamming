@@ -1,5 +1,7 @@
 const clientId = 'a1f9661a0ed64076a6c7e6f0d1f21980' // Insert client ID here.
 const redirectUri = 'http://localhost:3000/' // Have to add this to your accepted Spotify redirect URIs on the Spotify API.
+const userId = 'bccb3fektjx7r1urji3hxehpn'
+const spotifyApiPrefix = `https://api.spotify.com/v1`
 let accessToken
 
 const Spotify = {
@@ -24,7 +26,7 @@ const Spotify = {
 
   async search(term) {
     const accessToken = Spotify.getAccessToken()
-    return fetch(`https://api.spotify.com/v1/search?q=${term}&type=track`, {
+    return fetch(`${spotifyApiPrefix}/search?q=${term}&type=track`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       }
@@ -46,12 +48,47 @@ const Spotify = {
         }
       })
       .catch((error) => {
-        if (error instanceof SyntaxError) {
-          alert('Sorry, we could not process your request at this time. Please try again later.')
-        } else {
-          alert(error.message)
-        }
+        alert(error.message)
       })
+  },
+
+  async addTracksToPlaylist(accessToken, playlistId, tracksToAdd) {
+    const trackIdsToAdd = tracksToAdd.map((track) => track.uri)
+
+    return await fetch(`${spotifyApiPrefix}/users/${userId}/playlists/${playlistId}/tracks`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(trackIdsToAdd)
+    }).catch((error) => {
+      alert(error.message)
+    })
+  },
+
+  async savePlaylist(playlistName, playlistTracks) {
+    try {
+      const accessToken = Spotify.getAccessToken()
+      const createPlaylistResponse = await fetch(`${spotifyApiPrefix}/users/${userId}/playlists`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name: playlistName, description: 'test jamming playlist' })
+      })
+
+      if (createPlaylistResponse.ok) {
+        const jsonResponse = await createPlaylistResponse.json()
+        const playlistId = jsonResponse.id
+        await this.addTracksToPlaylist(accessToken, playlistId, playlistTracks)
+        alert(`Playlist ${playlistName} saved to your Spotify account successfully.`)
+      } else {
+        throw new Error('Failed to create playlist.')
+      }
+    } catch (error) {
+      alert(error.message)
+    }
   }
 }
 

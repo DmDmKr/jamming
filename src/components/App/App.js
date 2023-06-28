@@ -37,24 +37,29 @@ class App extends React.Component {
     this.setState({ playlistName: updatedPlaylistName })
   }
 
-  savePlaylist = (playlistTracks) => {
-    console.log(`Saving playlist ${this.state.playlistName}`)
-    playlistTracks.map((track) => {
-      console.log(track.uri)
-    })
+  savePlaylist = async () => {
+    try {
+      await Spotify.savePlaylist(this.state.playlistName, this.state.playlistTracks)
+      this.setState({ playlistName: '', playlistTracks: [] })
+    } catch (error) {
+      // Handle any error that occurred during saving the playlist
+      console.error('Error saving playlist:', error)
+      // Optionally, you can display an error message to the user
+      this.setState({ error: 'An error occurred while saving the playlist.' })
+    }
   }
 
-  searchSpotify = (term) => {
-    Spotify.search(term)
+  searchSpotify = async (term) => {
+    await Spotify.search(term)
       .then((tracks) => {
         if (tracks.length > 0) {
           this.setState({ searchResults: tracks, error: null })
         } else {
-          this.setState({ searchResults: null, error: 'No tracks found.' })
+          this.setState({ searchResults: [], error: 'No tracks found.' })
         }
       })
       .catch((error) => {
-        this.setState({ searchResults: null, error: 'An error occurred while fetching data.' })
+        this.setState({ searchResults: [], error: 'An error occurred while fetching data.' })
       })
   }
 

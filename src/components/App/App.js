@@ -9,11 +9,7 @@ class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      searchResults: [
-        { name: 'Track1', artist: 'artist1', album: 'album1', id: 1, uri: 'spotify:track:06WUUNf7q18NZfjIsQFsfa' },
-        { name: 'Track2', artist: 'artist2', album: 'album2', id: 2, uri: 'spotify:track:1DhCdQMyNLklKGxBheRFxL' },
-        { name: 'Track3', artist: 'artist3', album: 'album3', id: 3, uri: 'spotify:track:6EPRKhUOdiFSQwGBRBbvsZ' }
-      ],
+      searchResults: [],
       playlistName: 'New Playlist',
       playlistTracks: [],
       error: null
@@ -69,7 +65,7 @@ class App extends React.Component {
         <h1>Jamming</h1>
         <SearchBar searchSpotify={this.searchSpotify} />
         <div className="SongsListsContainer">
-          <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} />
+          <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} error={this.state.error} />
           <Playlist playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} playlistName={this.state.playlistName} onNameChange={this.changePlaylistName} onPlaylistSave={this.savePlaylist} />
         </div>
       </div>

@@ -8,10 +8,19 @@ class SearchResults extends React.Component {
   }
 
   render() {
+    const { searchResults, error } = this.props
+
+    let message = null
+    if (searchResults.length === 0 && error === null) {
+      message = 'Please search for some tracks on Spotify!'
+    } else if (error !== null) {
+      message = error
+    }
+
     return (
       <div className="SearchResults">
         <h2>Results</h2>
-        <TrackList tracks={this.props.searchResults} buttonType="search" onAdd={this.props.onAdd} />
+        {message ? <div className="SearchResults-message">{message}</div> : <TrackList tracks={searchResults} buttonType="search" onAdd={this.props.onAdd} />}
       </div>
     )
   }

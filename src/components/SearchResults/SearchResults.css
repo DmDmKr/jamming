@@ -5,3 +5,10 @@
   width: 500px;
   color: aliceblue;
 }
+
+.SearchResults-message {
+  margin-bottom: 40px;
+  margin-top: 40px;
+  text-size-adjust: auto;
+  font-size: large;
+}

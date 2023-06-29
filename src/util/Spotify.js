@@ -6,23 +6,17 @@ let accessToken
 
 const Spotify = {
   getAccessToken() {
-    const storedToken = localStorage.getItem('accessToken')
-
-    if (storedToken) {
-      return storedToken
+    if (accessToken) {
+      return accessToken
     }
 
     const accessTokenMatch = window.location.href.match(/access_token=([^&]*)/)
     const expiresInMatch = window.location.href.match(/expires_in=([^&]*)/)
-
     if (accessTokenMatch && expiresInMatch) {
-      const accessToken = accessTokenMatch[1]
+      accessToken = accessTokenMatch[1]
       const expiresIn = Number(expiresInMatch[1])
-      window.setTimeout(() => {
-        localStorage.removeItem('accessToken')
-      }, expiresIn * 1000)
+      window.setTimeout(() => (accessToken = ''), expiresIn * 1000)
       window.history.pushState('Access Token', null, '/') // This clears the parameters, allowing us to grab a new access token when it expires.
-      localStorage.setItem('accessToken', accessToken) // Save the access token in local storage
       return accessToken
     } else {
       const accessUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=token&scope=playlist-modify-public&redirect_uri=${redirectUri}`
@@ -32,15 +26,14 @@ const Spotify = {
 
   async search(term) {
     const accessToken = Spotify.getAccessToken()
-    return fetch(`${spotifyApiPrefix}/search?q=${term}&type=track`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    })
-      .then((response) => {
-        return response.json()
+    try {
+      const response = await fetch(`${spotifyApiPrefix}/search?q=${term}&type=track`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
       })
-      .then((jsonResponse) => {
+      if (response.ok) {
+        const jsonResponse = await response.json()
         if (jsonResponse.tracks.items) {
           return jsonResponse.tracks.items.map((item) => ({
             id: item.id,
@@ -52,10 +45,13 @@ const Spotify = {
         } else {
           throw new Error(jsonResponse.error.description)
         }
-      })
-      .catch((error) => {
-        alert(error.message)
-      })
+      } else {
+        throw new Error('Failed to retrieve search results. Please try again later.')
+      }
+    } catch (error) {
+      alert(error.message)
+      throw error
+    }
   },
 
   async addTracksToPlaylist(accessToken, playlistId, tracksToAdd) {

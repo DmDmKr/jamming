@@ -15,9 +15,17 @@ const Playlist = (props) => {
     props.onNameChange(updatedName)
   }
 
-  const handlePlaylistSave = (event) => {
+  const handlePlaylistSave = async (event) => {
     event.preventDefault()
-    props.onPlaylistSave(props.playlistTracks)
+    try {
+      await props.onPlaylistSave(props.playlistTracks)
+      setPlaylistName('')
+    } catch (error) {
+      // Handle any error that occurred during saving the playlist
+      console.error('Error saving playlist:', error)
+      // Optionally, you can display an error message to the user
+      // Handle the error state in the parent component (App) and display the error message
+    }
   }
 
   const isSaveDisabled = props.playlistTracks.length === 0 || playlistName === ''
@@ -25,7 +33,7 @@ const Playlist = (props) => {
   return (
     <div className="Playlist">
       <div className="Playlist-name-input-container">
-        <input placeholder={playlistName} onChange={handleNameChange} />
+        <input placeholder={playlistName} value={playlistName} onChange={handleNameChange} />
         <TrackList tracks={props.playlistTracks} buttonType="playlist" onRemove={props.onRemove} />
         <div className="Playlist-submit">
           <button onClick={handlePlaylistSave} disabled={isSaveDisabled}>

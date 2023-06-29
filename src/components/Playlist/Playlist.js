@@ -10,7 +10,7 @@ const Playlist = (props) => {
   }, [props.playlistName])
 
   const handleNameChange = (event) => {
-    const updatedName = event.target.value.trim()
+    const updatedName = event.target.value
     setPlaylistName(updatedName)
     props.onNameChange(updatedName)
   }

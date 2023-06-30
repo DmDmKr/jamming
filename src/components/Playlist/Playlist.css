@@ -1,11 +1,12 @@
 .Playlist {
   background-color: rgba(1, 12, 63, 0.7);
   color: aliceblue;
-  height: auto;
-  width: 500px;
+  height: 500px;
+  width: 600px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: scroll;
 }
 
 .Playlist input {
@@ -32,6 +33,8 @@
 }
 
 .Playlist-submit button {
+  margin-top: 20px;
+  border-radius: 4px;
   padding: 0.72rem 1.7rem;
   background-color: #0b0ec4;
   color: #ffffff;
@@ -46,4 +49,5 @@
 
 .Playlist-submit button:enabled:hover {
   cursor: pointer;
+  background-color: rgba(108, 65, 233, 0.7);
 }

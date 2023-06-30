@@ -31,15 +31,17 @@ const Playlist = (props) => {
   const isSaveDisabled = props.playlistTracks.length === 0 || playlistName === ''
 
   return (
-    <div className="Playlist">
-      <div className="Playlist-name-input-container">
-        <input placeholder={playlistName} value={playlistName} onChange={handleNameChange} />
-        <TrackList tracks={props.playlistTracks} buttonType="playlist" onRemove={props.onRemove} />
-        <div className="Playlist-submit">
-          <button onClick={handlePlaylistSave} disabled={isSaveDisabled}>
-            Save to Spotify
-          </button>
+    <div>
+      <div className="Playlist">
+        <div className="Playlist-name-input-container">
+          <input placeholder={playlistName} value={playlistName} onChange={handleNameChange} />
+          <TrackList tracks={props.playlistTracks} buttonType="playlist" onRemove={props.onRemove} />
         </div>
+      </div>
+      <div className="Playlist-submit">
+        <button onClick={handlePlaylistSave} disabled={isSaveDisabled}>
+          Save to Spotify
+        </button>
       </div>
     </div>
   )

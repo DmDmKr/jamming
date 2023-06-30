@@ -18,15 +18,18 @@ class App extends React.Component {
 
   addTrack = (track) => {
     const isTrackInPlaylist = this.state.playlistTracks.some((playlistTrack) => playlistTrack.id === track.id)
+
     if (!isTrackInPlaylist) {
       const updatedPlaylistTracks = [...this.state.playlistTracks, track]
-      this.setState({ playlistTracks: updatedPlaylistTracks })
+      const updatedSearchResults = this.state.searchResults.filter((playlistTrack) => playlistTrack.id !== track.id)
+      this.setState({ playlistTracks: updatedPlaylistTracks, searchResults: updatedSearchResults })
     }
   }
 
   removeTrack = (track) => {
     const updatedPlaylistTracks = this.state.playlistTracks.filter((playlistTrack) => playlistTrack.id !== track.id)
-    this.setState({ playlistTracks: updatedPlaylistTracks })
+    const updatedSearchResults = [track, ...this.state.searchResults]
+    this.setState({ playlistTracks: updatedPlaylistTracks, searchResults: updatedSearchResults })
   }
 
   changePlaylistName = (updatedPlaylistName) => {

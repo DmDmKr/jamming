@@ -1,6 +1,6 @@
 const clientId = 'a1f9661a0ed64076a6c7e6f0d1f21980' // Insert client ID here.
 const redirectUri = 'http://localhost:3000/' // Have to add this to your accepted Spotify redirect URIs on the Spotify API.
-const userId = 'bccb3fektjx7r1urji3hxehpn'
+const userId = 'bccb3fektjx7r1urji3hxehpn' //Insert your user ID here.
 const spotifyApiPrefix = `https://api.spotify.com/v1`
 let accessToken
 
@@ -35,10 +35,10 @@ const Spotify = {
       if (response.ok) {
         const jsonResponse = await response.json()
         if (jsonResponse.tracks.items) {
-          return jsonResponse.tracks.items.map((item) => ({
+          return jsonResponse.tracks.items.map(item => ({
             id: item.id,
             name: item.name,
-            artist: item.artists.map((artist) => artist.name).join(', '),
+            artist: item.artists.map(artist => artist.name).join(', '),
             album: item.album.name,
             uri: item.uri
           }))
@@ -55,7 +55,7 @@ const Spotify = {
   },
 
   async addTracksToPlaylist(accessToken, playlistId, tracksToAdd) {
-    const trackIdsToAdd = tracksToAdd.map((track) => track.uri)
+    const trackIdsToAdd = tracksToAdd.map(track => track.uri)
 
     return await fetch(`${spotifyApiPrefix}/users/${userId}/playlists/${playlistId}/tracks`, {
       method: 'POST',
@@ -63,7 +63,7 @@ const Spotify = {
         Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify(trackIdsToAdd)
-    }).catch((error) => {
+    }).catch(error => {
       alert(error.message)
     })
   },

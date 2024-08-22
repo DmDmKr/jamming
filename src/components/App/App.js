@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import './App.css'
 import SearchBar from '../SearchBar/SearchBar'
 import SearchResults from '../SearchResults/SearchResults'
 import Playlist from '../Playlist/Playlist'
 import Spotify from '../../util/Spotify'
+import backgroundImage from '../../assets/background_photo_desktop.jpg'
+import { Box, Typography } from '@mui/material'
 
 const App = () => {
   const [searchResults, setSearchResults] = useState([])
@@ -61,10 +62,25 @@ const App = () => {
   }
 
   return (
-    <div className="App">
-      <h1>Jamming</h1>
+    <Box
+      height="100%"
+      display="flex"
+      flexDirection="column"
+      gap={5}
+      sx={{
+        textAlign: 'center',
+        backgroundColor: '#535bcc',
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <Typography variant="h1" fontSize="4rem" color="white">
+        Jamming
+      </Typography>
       <SearchBar searchSpotify={searchSpotify} />
-      <div className="SongsListsContainer">
+      <Box display="flex" justifyContent="center">
         <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />
         <Playlist
           playlistTracks={playlistTracks}
@@ -73,9 +89,9 @@ const App = () => {
           onNameChange={changePlaylistName}
           onPlaylistSave={savePlaylist}
         />
-      </div>
+      </Box>
       {error && <p className="error-message">{error}</p>}
-    </div>
+    </Box>
   )
 }
 

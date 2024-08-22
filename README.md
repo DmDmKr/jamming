@@ -10,4 +10,4 @@ In the project directory, you can run:
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-To fully use the functionality and add tracks and playlist, you will be asked to log in to your Spotify account when making first request.
+To fully use the functionality and send authoprized requests, you need to set the data in **util/Spotify.js**. Then you will be asked to log in to your Spotify account when making first request.

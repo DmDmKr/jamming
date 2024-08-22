@@ -1,32 +1,30 @@
 import React from 'react'
 import './Track.css'
 
-class Track extends React.Component {
-  constructor(props) {
-    super(props)
+const Track = ({ track, buttonType, onAdd, onRemove }) => {
+  const handleAdd = () => {
+    onAdd(track)
   }
 
-  handleAdd = () => {
-    this.props.onAdd(this.props.track)
+  const handleRemove = () => {
+    onRemove(track)
   }
 
-  handleRemove = () => {
-    this.props.onRemove(this.props.track)
-  }
-
-  render() {
-    return (
-      <div className="Track">
-        <div className="Track-information">
-          <h3>{this.props.track.name}</h3>
-          <p>
-            {this.props.track.album} - {this.props.track.artist}
-          </p>
-          {this.props.buttonType === 'search' ? <button onClick={this.handleAdd}>+</button> : <button onClick={this.handleRemove}>-</button>}
-        </div>
+  return (
+    <div className="Track">
+      <div className="Track-information">
+        <h3>{track.name}</h3>
+        <p>
+          {track.album} - {track.artist}
+        </p>
+        {buttonType === 'search' ? (
+          <button onClick={handleAdd}>+</button>
+        ) : (
+          <button onClick={handleRemove}>-</button>
+        )}
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default Track

@@ -2,40 +2,48 @@ import React, { useState, useEffect } from 'react'
 import './Playlist.css'
 import TrackList from '../Tracklist/Tracklist'
 
-const Playlist = (props) => {
-  const [playlistName, setPlaylistName] = useState(props.playlistName)
+const Playlist = ({
+  playlistName: initialPlaylistName,
+  playlistTracks,
+  onNameChange,
+  onRemove,
+  onPlaylistSave
+}) => {
+  const [playlistName, setPlaylistName] = useState(initialPlaylistName)
 
   useEffect(() => {
-    setPlaylistName(props.playlistName)
-  }, [props.playlistName])
+    setPlaylistName(initialPlaylistName)
+  }, [initialPlaylistName])
 
-  const handleNameChange = (event) => {
+  const handleNameChange = event => {
     const updatedName = event.target.value
     setPlaylistName(updatedName)
-    props.onNameChange(updatedName)
+    onNameChange(updatedName)
   }
 
-  const handlePlaylistSave = async (event) => {
+  const handlePlaylistSave = async event => {
     event.preventDefault()
     try {
-      await props.onPlaylistSave(props.playlistTracks)
-      setPlaylistName('')
+      await onPlaylistSave(playlistTracks)
+      setPlaylistName('') // Clear the name after saving
     } catch (error) {
-      // Handle any error that occurred during saving the playlist
       console.error('Error saving playlist:', error)
-      // Optionally, you can display an error message to the user
-      // Handle the error state in the parent component (App) and display the error message
+      // Optionally, display an error message to the user
     }
   }
 
-  const isSaveDisabled = props.playlistTracks.length === 0 || playlistName === ''
+  const isSaveDisabled = playlistTracks.length === 0 || playlistName === ''
 
   return (
     <div>
       <div className="Playlist">
         <div className="Playlist-name-input-container">
-          <input placeholder={playlistName} value={playlistName} onChange={handleNameChange} />
-          <TrackList tracks={props.playlistTracks} buttonType="playlist" onRemove={props.onRemove} />
+          <input
+            placeholder="Enter playlist name"
+            value={playlistName}
+            onChange={handleNameChange}
+          />
+          <TrackList tracks={playlistTracks} buttonType="playlist" onRemove={onRemove} />
         </div>
       </div>
       <div className="Playlist-submit">

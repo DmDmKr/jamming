@@ -1,79 +1,82 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './App.css'
 import SearchBar from '../SearchBar/SearchBar'
 import SearchResults from '../SearchResults/SearchResults'
 import Playlist from '../Playlist/Playlist'
 import Spotify from '../../util/Spotify'
 
-class App extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      searchResults: [],
-      playlistName: 'New Playlist',
-      playlistTracks: [],
-      error: null
-    }
-  }
+const App = () => {
+  const [searchResults, setSearchResults] = useState([])
+  const [playlistName, setPlaylistName] = useState('New Playlist')
+  const [playlistTracks, setPlaylistTracks] = useState([])
+  const [error, setError] = useState(null)
 
-  addTrack = (track) => {
-    const isTrackInPlaylist = this.state.playlistTracks.some((playlistTrack) => playlistTrack.id === track.id)
+  const addTrack = track => {
+    const isTrackInPlaylist = playlistTracks.some(playlistTrack => playlistTrack.id === track.id)
 
     if (!isTrackInPlaylist) {
-      const updatedPlaylistTracks = [...this.state.playlistTracks, track]
-      const updatedSearchResults = this.state.searchResults.filter((playlistTrack) => playlistTrack.id !== track.id)
-      this.setState({ playlistTracks: updatedPlaylistTracks, searchResults: updatedSearchResults })
+      setPlaylistTracks(prevTracks => [...prevTracks, track])
+      setSearchResults(prevResults =>
+        prevResults.filter(playlistTrack => playlistTrack.id !== track.id)
+      )
     }
   }
 
-  removeTrack = (track) => {
-    const updatedPlaylistTracks = this.state.playlistTracks.filter((playlistTrack) => playlistTrack.id !== track.id)
-    const updatedSearchResults = [track, ...this.state.searchResults]
-    this.setState({ playlistTracks: updatedPlaylistTracks, searchResults: updatedSearchResults })
-  }
-
-  changePlaylistName = (updatedPlaylistName) => {
-    this.setState({ playlistName: updatedPlaylistName })
-  }
-
-  savePlaylist = async () => {
-    try {
-      await Spotify.savePlaylist(this.state.playlistName, this.state.playlistTracks)
-      this.setState({ playlistName: '', playlistTracks: [] })
-    } catch (error) {
-      // Handle any error that occurred during saving the playlist
-      console.error('Error saving playlist:', error)
-      // Optionally, you can display an error message to the user
-      this.setState({ error: 'An error occurred while saving the playlist.' })
-    }
-  }
-
-  searchSpotify = async (term) => {
-    await Spotify.search(term)
-      .then((tracks) => {
-        if (tracks.length > 0) {
-          this.setState({ searchResults: tracks, error: null })
-        } else {
-          this.setState({ searchResults: [], error: 'No tracks found.' })
-        }
-      })
-      .catch((error) => {
-        this.setState({ searchResults: [], error: 'An error occurred while fetching data.' })
-      })
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <h1>Jamming</h1>
-        <SearchBar searchSpotify={this.searchSpotify} />
-        <div className="SongsListsContainer">
-          <SearchResults searchResults={this.state.searchResults} onAdd={this.addTrack} error={this.state.error} />
-          <Playlist playlistTracks={this.state.playlistTracks} onRemove={this.removeTrack} playlistName={this.state.playlistName} onNameChange={this.changePlaylistName} onPlaylistSave={this.savePlaylist} />
-        </div>
-      </div>
+  const removeTrack = track => {
+    setPlaylistTracks(prevTracks =>
+      prevTracks.filter(playlistTrack => playlistTrack.id !== track.id)
     )
+    setSearchResults(prevResults => [track, ...prevResults])
   }
+
+  const changePlaylistName = updatedPlaylistName => {
+    setPlaylistName(updatedPlaylistName)
+  }
+
+  const savePlaylist = async () => {
+    try {
+      await Spotify.savePlaylist(playlistName, playlistTracks)
+      setPlaylistName('')
+      setPlaylistTracks([])
+    } catch (error) {
+      console.error('Error saving playlist:', error)
+      setError('An error occurred while saving the playlist.')
+    }
+  }
+
+  const searchSpotify = async term => {
+    try {
+      const tracks = await Spotify.search(term)
+      if (tracks.length > 0) {
+        setSearchResults(tracks)
+        setError(null)
+      } else {
+        setSearchResults([])
+        setError('No tracks found.')
+      }
+    } catch (error) {
+      setSearchResults([])
+      setError('An error occurred while fetching data.')
+    }
+  }
+
+  return (
+    <div className="App">
+      <h1>Jamming</h1>
+      <SearchBar searchSpotify={searchSpotify} />
+      <div className="SongsListsContainer">
+        <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />
+        <Playlist
+          playlistTracks={playlistTracks}
+          onRemove={removeTrack}
+          playlistName={playlistName}
+          onNameChange={changePlaylistName}
+          onPlaylistSave={savePlaylist}
+        />
+      </div>
+      {error && <p className="error-message">{error}</p>}
+    </div>
+  )
 }
 
 export default App

@@ -1,45 +1,42 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './SearchBar.css'
 
-class SearchBar extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      term: ''
-    }
+const SearchBar = ({ searchSpotify }) => {
+  const [term, setTerm] = useState('')
+
+  const handleTermChange = event => {
+    setTerm(event.target.value)
   }
 
-  handleTermChange = (event) => {
-    const term = event.target.value
-    this.setState({ term })
-  }
-
-  handleSearch = (event) => {
-    const term = this.state.term.trim()
-    if (term) {
-      this.props.searchSpotify(term)
-    }
+  const handleSearch = event => {
     event.preventDefault()
-  }
-
-  handleEnterKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      this.handleSearch(event)
+    const trimmedTerm = term.trim()
+    if (trimmedTerm) {
+      searchSpotify(trimmedTerm)
     }
   }
 
-  render() {
-    return (
-      <div className="SearchBar">
-        <div className="SearchBar-input-container">
-          <input placeholder="Search Spotify" onChange={this.handleTermChange} onKeyDown={this.handleEnterKeyPress} value={this.state.term} />
-          <div className="SearchBar-submit" onClick={this.handleSearch}>
-            <button>Search</button>
-          </div>
+  const handleEnterKeyPress = event => {
+    if (event.key === 'Enter') {
+      handleSearch(event)
+    }
+  }
+
+  return (
+    <div className="SearchBar">
+      <div className="SearchBar-input-container">
+        <input
+          placeholder="Search Spotify"
+          onChange={handleTermChange}
+          onKeyDown={handleEnterKeyPress}
+          value={term}
+        />
+        <div className="SearchBar-submit" onClick={handleSearch}>
+          <button>Search</button>
         </div>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 export default SearchBar

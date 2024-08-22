@@ -2,12 +2,18 @@ import React from 'react'
 import './Tracklist.css'
 import Track from '../Track/Track'
 
-const TrackList = (props) => {
+const TrackList = ({ tracks, onAdd, onRemove, buttonType }) => {
   return (
     <div className="TrackList">
-      {props.tracks.map((track) => {
-        return <Track track={track} key={track.id} onAdd={props.onAdd} buttonType={props.buttonType} onRemove={props.onRemove} />
-      })}
+      {tracks.map(track => (
+        <Track
+          track={track}
+          key={track.id}
+          onAdd={onAdd}
+          buttonType={buttonType}
+          onRemove={onRemove}
+        />
+      ))}
     </div>
   )
 }

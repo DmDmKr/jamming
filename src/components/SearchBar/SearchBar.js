@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import './SearchBar.css'
+import { Box, TextField, Button } from '@mui/material'
 
 const SearchBar = ({ searchSpotify }) => {
   const [term, setTerm] = useState('')
@@ -23,19 +23,21 @@ const SearchBar = ({ searchSpotify }) => {
   }
 
   return (
-    <div className="SearchBar">
-      <div className="SearchBar-input-container">
-        <input
-          placeholder="Search Spotify"
-          onChange={handleTermChange}
-          onKeyDown={handleEnterKeyPress}
-          value={term}
-        />
-        <div className="SearchBar-submit" onClick={handleSearch}>
-          <button>Search</button>
-        </div>
-      </div>
-    </div>
+    <Box display="flex" flexDirection="column" alignItems="center" gap={5}>
+      <TextField
+        variant="outlined"
+        placeholder="Search Spotify"
+        onChange={handleTermChange}
+        onKeyDown={handleEnterKeyPress}
+        value={term}
+        sx={{
+          width: '300px'
+        }}
+      />
+      <Button onClick={handleSearch} variant="contained" disabled={!term} sx={{ width: '150px' }}>
+        Search
+      </Button>
+    </Box>
   )
 }
 

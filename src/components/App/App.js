@@ -66,7 +66,7 @@ const App = () => {
       height="100%"
       display="flex"
       flexDirection="column"
-      gap={5}
+      gap={20}
       sx={{
         textAlign: 'center',
         backgroundColor: '#535bcc',
@@ -80,7 +80,12 @@ const App = () => {
         Jamming
       </Typography>
       <SearchBar searchSpotify={searchSpotify} />
-      <Box display="flex" justifyContent="center">
+      <Box
+        display="flex"
+        justifyContent="center"
+        height="100%"
+        className="parentAppBoxForSearchResultsAndPlaylist"
+      >
         <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />
         <Playlist
           playlistTracks={playlistTracks}

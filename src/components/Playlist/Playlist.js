@@ -48,12 +48,7 @@ const Playlist = ({
           overflowY: 'auto'
         }}
       >
-        <Box
-          sx={{
-            flexDirection: 'column',
-            justifyContent: 'space-between'
-          }}
-        >
+        <Box>
           <TextField
             placeholder="Enter playlist name"
             value={playlistName}

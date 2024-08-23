@@ -1,10 +1,10 @@
 import React from 'react'
-import './Tracklist.css'
 import Track from '../Track/Track'
+import { Box } from '@mui/material'
 
 const TrackList = ({ tracks, onAdd, onRemove, buttonType }) => {
   return (
-    <div className="TrackList">
+    <Box className="TrackList">
       {tracks.map(track => (
         <Track
           track={track}
@@ -14,7 +14,7 @@ const TrackList = ({ tracks, onAdd, onRemove, buttonType }) => {
           onRemove={onRemove}
         />
       ))}
-    </div>
+    </Box>
   )
 }
 

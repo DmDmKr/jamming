@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import './Playlist.css'
+import { Box, TextField, Button, useTheme } from '@mui/material'
 import TrackList from '../Tracklist/Tracklist'
 
 const Playlist = ({
@@ -10,6 +10,7 @@ const Playlist = ({
   onPlaylistSave
 }) => {
   const [playlistName, setPlaylistName] = useState(initialPlaylistName)
+  const theme = useTheme()
 
   useEffect(() => {
     setPlaylistName(initialPlaylistName)
@@ -25,33 +26,52 @@ const Playlist = ({
     event.preventDefault()
     try {
       await onPlaylistSave(playlistTracks)
-      setPlaylistName('') // Clear the name after saving
+      setPlaylistName('')
     } catch (error) {
       console.error('Error saving playlist:', error)
-      // Optionally, display an error message to the user
+      alert('Failed to save your playlist! Please try again later')
     }
   }
 
   const isSaveDisabled = playlistTracks.length === 0 || playlistName === ''
 
   return (
-    <div>
-      <div className="Playlist">
-        <div className="Playlist-name-input-container">
-          <input
+    <Box display="flex" flexDirection="column" gap={10} height="100%">
+      <Box
+        backgroundColor="rgba(1, 12, 63, 0.7)"
+        display="flex"
+        flexDirection="column"
+        height={theme.spacing(250)}
+        width={theme.spacing(300)}
+        color="aliceblue"
+        sx={{
+          overflowY: 'auto'
+        }}
+      >
+        <Box
+          sx={{
+            flexDirection: 'column',
+            justifyContent: 'space-between'
+          }}
+        >
+          <TextField
             placeholder="Enter playlist name"
             value={playlistName}
             onChange={handleNameChange}
+            sx={{
+              fontWeight: 500,
+              textAlign: 'center',
+              outline: 'none',
+              marginTop: 8
+            }}
           />
           <TrackList tracks={playlistTracks} buttonType="playlist" onRemove={onRemove} />
-        </div>
-      </div>
-      <div className="Playlist-submit">
-        <button onClick={handlePlaylistSave} disabled={isSaveDisabled}>
-          Save to Spotify
-        </button>
-      </div>
-    </div>
+        </Box>
+      </Box>
+      <Button onClick={handlePlaylistSave} disabled={isSaveDisabled}>
+        Save to Spotify
+      </Button>
+    </Box>
   )
 }
 

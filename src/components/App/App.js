@@ -7,6 +7,7 @@ import backgroundImage from '../../assets/background_photo_desktop.jpg'
 import { Box, Typography } from '@mui/material'
 
 const App = () => {
+  const [term, setTerm] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [playlistName, setPlaylistName] = useState('New Playlist')
   const [playlistTracks, setPlaylistTracks] = useState([])
@@ -61,6 +62,13 @@ const App = () => {
     }
   }
 
+  const handleClear = () => {
+    setTerm('')
+    setSearchResults([])
+    setError(null)
+    setPlaylistTracks([]) // Optionally clear playlist tracks
+  }
+
   return (
     <Box
       gap={5}
@@ -83,7 +91,12 @@ const App = () => {
       <Typography variant="h1" fontSize="4rem" color="white">
         Jamming
       </Typography>
-      <SearchBar searchSpotify={searchSpotify} />
+      <SearchBar
+        term={term} // Pass the term state
+        setTerm={setTerm} // Pass the setTerm function
+        searchSpotify={searchSpotify}
+        handleClear={handleClear} // Pass the handleClear function
+      />
       <Box
         sx={{
           display: 'grid',

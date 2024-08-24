@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, TextField, Button, useTheme } from '@mui/material'
 
-const SearchBar = ({ searchSpotify }) => {
-  const [term, setTerm] = useState('')
+const SearchBar = ({ term, setTerm, searchSpotify, handleClear }) => {
   const theme = useTheme()
 
   const handleTermChange = event => {
@@ -21,10 +20,6 @@ const SearchBar = ({ searchSpotify }) => {
     if (event.key === 'Enter') {
       handleSearch(event)
     }
-  }
-
-  const handleClear = () => {
-    setTerm('')
   }
 
   return (

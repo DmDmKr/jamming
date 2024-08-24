@@ -63,34 +63,35 @@ const App = () => {
 
   return (
     <Box
+      gap={5}
+      display="flex"
+      height="100%"
+      width="100%"
+      minHeight="100vh"
+      flexDirection="column"
+      justifyContent="space-between"
+      textAlign="center"
+      backgroundColor="#535bcc"
+      overflow="auto"
       sx={{
-        height: '100%',
-        width: '100%',
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-        textAlign: 'center',
-        backgroundColor: '#535bcc',
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        overflow: 'auto'
+        backgroundRepeat: 'no-repeat'
       }}
     >
-      <Typography variant="h1" fontSize="4rem" color="white" sx={{ padding: '2rem 0' }}>
+      <Typography variant="h1" fontSize="4rem" color="white">
         Jamming
       </Typography>
       <SearchBar searchSpotify={searchSpotify} />
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'stretch',
-          flex: 1, // Allow this box to grow and fill available space
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
           gap: '2rem',
-          padding: '0 2rem'
+          padding: '0 2rem',
+          flex: 1,
+          alignItems: 'start'
         }}
       >
         <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />
@@ -102,6 +103,7 @@ const App = () => {
           onPlaylistSave={savePlaylist}
         />
       </Box>
+
       {error && (
         <Typography className="error-message" sx={{ padding: '1rem', color: 'red' }}>
           {error}

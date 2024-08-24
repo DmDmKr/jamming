@@ -37,13 +37,14 @@ const Playlist = ({
 
   return (
     <Box display="flex" flexDirection="column" gap={5} color="aliceblue" height="100%">
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center" alignItems="center" height="4rem">
         <TextField
           placeholder="Enter playlist name"
           value={playlistName}
           onChange={handleNameChange}
           sx={{
-            width: theme.spacing(100), // Set a fixed width for the TextField
+            width: '100%',
+            maxWidth: theme.spacing(150),
             fontWeight: 500,
             textAlign: 'center',
             outline: 'none'
@@ -55,7 +56,7 @@ const Playlist = ({
         display="flex"
         flexDirection="column"
         height={theme.spacing(250)}
-        width={theme.spacing(300)}
+        width="100%"
         sx={{
           overflowY: 'auto'
         }}
@@ -67,7 +68,8 @@ const Playlist = ({
           onClick={handlePlaylistSave}
           disabled={isSaveDisabled}
           sx={{
-            width: theme.spacing(100) // Set a fixed width for the Button
+            width: '100%',
+            maxWidth: theme.spacing(150)
           }}
         >
           Save to Spotify

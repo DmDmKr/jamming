@@ -23,9 +23,9 @@ const SearchResults = ({ searchResults, error, onAdd }) => {
         fontSize="2rem"
         sx={{
           display: 'flex',
-          alignItems: 'center', // Center vertically
-          justifyContent: 'center', // Center horizontally
-          mb: 5
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '4rem'
         }}
       >
         Results
@@ -36,7 +36,7 @@ const SearchResults = ({ searchResults, error, onAdd }) => {
         alignItems="center"
         flexDirection="column"
         height={theme.spacing(250)}
-        width={theme.spacing(300)}
+        width="100%"
         sx={{
           overflowY: 'auto'
         }}

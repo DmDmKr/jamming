@@ -22,6 +22,12 @@ const theme = createTheme({
             backgroundColor: '#999999',
             color: '#ffffff'
           }
+        },
+        outlined: {
+          '&:hover': {
+            backgroundColor: 'rgba(108, 65, 233, 0.1)', // Light background on hover
+            cursor: 'pointer'
+          }
         }
       }
     },

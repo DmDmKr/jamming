@@ -23,24 +23,36 @@ const SearchBar = ({ searchSpotify }) => {
     }
   }
 
+  const handleClear = () => {
+    setTerm('')
+  }
+
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={20}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      width="100%"
+      alignItems="center"
+      gap={10}
+      margin="0 auto"
+      maxWidth={theme.spacing(150)}
+    >
       <TextField
         variant="outlined"
         placeholder="Search Spotify"
         onChange={handleTermChange}
         onKeyDown={handleEnterKeyPress}
         value={term}
-        sx={{ width: theme.spacing(150) }}
+        fullWidth
       />
-      <Button
-        onClick={handleSearch}
-        variant="contained"
-        disabled={!term}
-        sx={{ width: theme.spacing(75) }}
-      >
-        Search
-      </Button>
+      <Box display="flex" width="100%" justifyContent="space-between">
+        <Button onClick={handleSearch} variant="contained" disabled={!term}>
+          Search
+        </Button>
+        <Button onClick={handleClear} variant="outlined">
+          Clear
+        </Button>
+      </Box>
     </Box>
   )
 }

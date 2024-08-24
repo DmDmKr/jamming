@@ -63,28 +63,35 @@ const App = () => {
 
   return (
     <Box
-      height="100%"
-      display="flex"
-      flexDirection="column"
-      gap={20}
       sx={{
+        height: '100%',
+        width: '100%',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
         textAlign: 'center',
         backgroundColor: '#535bcc',
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
+        backgroundRepeat: 'no-repeat',
+        overflow: 'auto'
       }}
     >
-      <Typography variant="h1" fontSize="4rem" color="white">
+      <Typography variant="h1" fontSize="4rem" color="white" sx={{ padding: '2rem 0' }}>
         Jamming
       </Typography>
       <SearchBar searchSpotify={searchSpotify} />
       <Box
-        display="flex"
-        justifyContent="center"
-        height="100%"
-        className="parentAppBoxForSearchResultsAndPlaylist"
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'stretch',
+          flex: 1, // Allow this box to grow and fill available space
+          gap: '2rem',
+          padding: '0 2rem'
+        }}
       >
         <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />
         <Playlist
@@ -95,7 +102,11 @@ const App = () => {
           onPlaylistSave={savePlaylist}
         />
       </Box>
-      {error && <p className="error-message">{error}</p>}
+      {error && (
+        <Typography className="error-message" sx={{ padding: '1rem', color: 'red' }}>
+          {error}
+        </Typography>
+      )}
     </Box>
   )
 }

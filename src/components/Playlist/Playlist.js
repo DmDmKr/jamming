@@ -36,36 +36,43 @@ const Playlist = ({
   const isSaveDisabled = playlistTracks.length === 0 || playlistName === ''
 
   return (
-    <Box display="flex" flexDirection="column" gap={10} height="100%">
+    <Box display="flex" flexDirection="column" gap={5} color="aliceblue" height="100%">
+      <Box display="flex" justifyContent="center">
+        <TextField
+          placeholder="Enter playlist name"
+          value={playlistName}
+          onChange={handleNameChange}
+          sx={{
+            width: theme.spacing(100), // Set a fixed width for the TextField
+            fontWeight: 500,
+            textAlign: 'center',
+            outline: 'none'
+          }}
+        />
+      </Box>
       <Box
         backgroundColor="rgba(1, 12, 63, 0.7)"
         display="flex"
         flexDirection="column"
         height={theme.spacing(250)}
         width={theme.spacing(300)}
-        color="aliceblue"
         sx={{
           overflowY: 'auto'
         }}
       >
-        <Box>
-          <TextField
-            placeholder="Enter playlist name"
-            value={playlistName}
-            onChange={handleNameChange}
-            sx={{
-              fontWeight: 500,
-              textAlign: 'center',
-              outline: 'none',
-              marginTop: 8
-            }}
-          />
-          <TrackList tracks={playlistTracks} buttonType="playlist" onRemove={onRemove} />
-        </Box>
+        <TrackList tracks={playlistTracks} buttonType="playlist" onRemove={onRemove} />
       </Box>
-      <Button onClick={handlePlaylistSave} disabled={isSaveDisabled}>
-        Save to Spotify
-      </Button>
+      <Box display="flex" justifyContent="center">
+        <Button
+          onClick={handlePlaylistSave}
+          disabled={isSaveDisabled}
+          sx={{
+            width: theme.spacing(100) // Set a fixed width for the Button
+          }}
+        >
+          Save to Spotify
+        </Button>
+      </Box>
     </Box>
   )
 }

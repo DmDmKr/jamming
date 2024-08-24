@@ -17,38 +17,47 @@ const SearchResults = ({ searchResults, error, onAdd }) => {
   const message = getMessage()
 
   return (
-    <Box
-      backgroundColor="rgba(1, 12, 63, 0.7)"
-      display="flex"
-      alignItems="center"
-      flexDirection="column"
-      mr={100}
-      color="aliceblue"
-      height={theme.spacing(250)}
-      width={theme.spacing(300)}
-      sx={{
-        overflowY: 'auto'
-      }}
-    >
-      <Typography variant="h2" mt={8} fontSize="2rem">
+    <Box display="flex" flexDirection="column" alignItems="center" gap={5} color="aliceblue">
+      <Typography
+        variant="h2"
+        fontSize="2rem"
+        sx={{
+          display: 'flex',
+          alignItems: 'center', // Center vertically
+          justifyContent: 'center', // Center horizontally
+          mb: 5
+        }}
+      >
         Results
       </Typography>
-      {message ? (
-        <Box
-          mt={theme.spacing(20)}
-          mb={theme.spacing(20)}
-          fontSize="large"
-          textAlign="center"
-          display="flex"
-          flex={1}
-          alignItems="center"
-          justifyContent="center"
-        >
-          {message}
-        </Box>
-      ) : (
-        <TrackList tracks={searchResults} buttonType="search" onAdd={onAdd} />
-      )}
+      <Box
+        backgroundColor="rgba(1, 12, 63, 0.7)"
+        display="flex"
+        alignItems="center"
+        flexDirection="column"
+        height={theme.spacing(250)}
+        width={theme.spacing(300)}
+        sx={{
+          overflowY: 'auto'
+        }}
+      >
+        {message ? (
+          <Box
+            mt={theme.spacing(20)}
+            mb={theme.spacing(20)}
+            fontSize="large"
+            textAlign="center"
+            display="flex"
+            flex={1}
+            alignItems="center"
+            justifyContent="center"
+          >
+            {message}
+          </Box>
+        ) : (
+          <TrackList tracks={searchResults} buttonType="search" onAdd={onAdd} />
+        )}
+      </Box>
     </Box>
   )
 }

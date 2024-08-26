@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Box, TextField, Button, useTheme } from '@mui/material'
-import TrackList from '../Tracklist/Tracklist'
+import TrackList from './Tracklist'
 
 const Playlist = ({
   playlistName: initialPlaylistName,

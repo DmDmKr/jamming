@@ -1,5 +1,5 @@
 import React from 'react'
-import Track from '../Track/Track'
+import Track from './Track'
 import { Box } from '@mui/material'
 
 const TrackList = ({ tracks, onAdd, onRemove, buttonType }) => {

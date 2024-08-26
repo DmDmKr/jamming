@@ -1,6 +1,7 @@
 import React from 'react'
 import { Box, Typography, useTheme } from '@mui/material'
-import TrackList from '../Tracklist/Tracklist'
+import TrackList from './Tracklist'
+import BoxWithMessage from './BoxWithMessage'
 
 const SearchResults = ({ searchResults, error, onAdd }) => {
   const theme = useTheme()
@@ -42,18 +43,7 @@ const SearchResults = ({ searchResults, error, onAdd }) => {
         }}
       >
         {message ? (
-          <Box
-            mt={theme.spacing(20)}
-            mb={theme.spacing(20)}
-            fontSize="large"
-            textAlign="center"
-            display="flex"
-            flex={1}
-            alignItems="center"
-            justifyContent="center"
-          >
-            {message}
-          </Box>
+          <BoxWithMessage message={message} />
         ) : (
           <TrackList tracks={searchResults} buttonType="search" onAdd={onAdd} />
         )}

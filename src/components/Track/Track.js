@@ -11,8 +11,14 @@ const Track = ({ track, buttonType, onAdd, onRemove }) => {
   }
 
   return (
-    <Box display="flex" justifyContent="space-between" alignItems="center" flexWrap="nowrap">
-      <Box flex={1}>
+    <Box
+      display="flex"
+      justifyContent="flex-start"
+      alignItems="center"
+      gap="0.5rem"
+      padding="0 1rem"
+    >
+      <Box flex={1} display="flex" flexDirection="column" alignItems="flex-start" textAlign="left">
         <Typography variant="h6" component="h3">
           {track.name}
         </Typography>
@@ -28,7 +34,6 @@ const Track = ({ track, buttonType, onAdd, onRemove }) => {
       <Button
         onClick={buttonType === 'search' ? handleAdd : handleRemove}
         sx={{
-          mr: 5,
           padding: '0.5rem',
           transition: 'color 0.25s'
         }}

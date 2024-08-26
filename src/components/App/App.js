@@ -8,7 +8,6 @@ import { Box, Typography } from '@mui/material'
 
 const App = () => {
   const [term, setTerm] = useState('')
-
   const [searchResults, setSearchResults] = useState([])
   const [playlistName, setPlaylistName] = useState('New Playlist')
   const [playlistTracks, setPlaylistTracks] = useState([])

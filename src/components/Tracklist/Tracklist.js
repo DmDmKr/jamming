@@ -4,7 +4,7 @@ import { Box } from '@mui/material'
 
 const TrackList = ({ tracks, onAdd, onRemove, buttonType }) => {
   return (
-    <Box className="TrackList">
+    <Box display="flex" flexDirection="column" width="100%">
       {tracks.map(track => (
         <Track
           track={track}

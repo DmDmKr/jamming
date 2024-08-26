@@ -8,6 +8,7 @@ import { Box, Typography } from '@mui/material'
 
 const App = () => {
   const [term, setTerm] = useState('')
+
   const [searchResults, setSearchResults] = useState([])
   const [playlistName, setPlaylistName] = useState('New Playlist')
   const [playlistTracks, setPlaylistTracks] = useState([])
@@ -92,19 +93,24 @@ const App = () => {
         Jamming
       </Typography>
       <SearchBar
-        term={term} // Pass the term state
-        setTerm={setTerm} // Pass the setTerm function
+        term={term}
+        setTerm={setTerm}
         searchSpotify={searchSpotify}
-        handleClear={handleClear} // Pass the handleClear function
+        handleClear={handleClear}
       />
       <Box
+        display="grid"
+        gridTemplateColumns="1fr 1fr"
+        gap="2rem"
+        padding="0 2rem"
+        flex="1"
+        alignItems="start"
         sx={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '2rem',
-          padding: '0 2rem',
-          flex: 1,
-          alignItems: 'start'
+          '@media (max-width: 600px)': {
+            gridTemplateColumns: '1fr',
+            padding: '0 1rem',
+            gap: '1rem'
+          }
         }}
       >
         <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />

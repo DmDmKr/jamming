@@ -1,4 +1,3 @@
-import React from 'react'
 import Track from './Track'
 import { Box } from '@mui/material'
 

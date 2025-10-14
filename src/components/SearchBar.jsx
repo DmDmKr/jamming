@@ -1,4 +1,3 @@
-import React from 'react'
 import { Box, TextField, Button, useTheme } from '@mui/material'
 
 const SearchBar = ({ term, setTerm, searchSpotify, handleClear }) => {

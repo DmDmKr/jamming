@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import Spotify from '../util/Spotify'
 
 const useSpotify = () => {
@@ -7,6 +7,21 @@ const useSpotify = () => {
   const [playlistName, setPlaylistName] = useState('New Playlist')
   const [term, setTerm] = useState('')
   const [error, setError] = useState(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    const initializeAuth = () => {
+      try {
+        Spotify.getAccessToken()
+        setIsAuthenticated(true)
+      } catch (error) {
+        console.error('Authentication failed:', error)
+        setIsAuthenticated(false)
+      }
+    }
+
+    initializeAuth()
+  }, [])
 
   const addTrack = useCallback(
     track => {
@@ -44,21 +59,29 @@ const useSpotify = () => {
     }
   }, [playlistName, playlistTracks])
 
-  const searchSpotify = useCallback(async term => {
-    try {
-      const tracks = await Spotify.search(term)
-      if (tracks.length > 0) {
-        setSearchResults(tracks)
-        setError(null)
-      } else {
-        setSearchResults([])
-        setError('No tracks found.')
+  const searchSpotify = useCallback(
+    async term => {
+      if (!isAuthenticated) {
+        setError('Please wait for authentication to complete.')
+        return
       }
-    } catch (error) {
-      setSearchResults([])
-      setError('An error occurred while fetching data.')
-    }
-  }, [])
+
+      try {
+        const tracks = await Spotify.search(term)
+        if (tracks.length > 0) {
+          setSearchResults(tracks)
+          setError(null)
+        } else {
+          setSearchResults([])
+          setError('No tracks found.')
+        }
+      } catch (error) {
+        setSearchResults([])
+        setError('An error occurred while fetching data.')
+      }
+    },
+    [isAuthenticated]
+  )
 
   const clearAll = useCallback(() => {
     setSearchResults([])
@@ -74,6 +97,7 @@ const useSpotify = () => {
     playlistName,
     error,
     term,
+    isAuthenticated,
     setTerm,
     addTrack,
     removeTrack,

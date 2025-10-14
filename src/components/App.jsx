@@ -12,6 +12,7 @@ const App = () => {
     playlistName,
     error,
     term,
+    isAuthenticated,
     addTrack,
     setTerm,
     removeTrack,
@@ -48,6 +49,7 @@ const App = () => {
         setTerm={setTerm}
         searchSpotify={searchSpotify}
         handleClear={clearAll}
+        isAuthenticated={isAuthenticated}
       />
       <Box
         display="grid"

@@ -1,39 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Box, TextField, Button, useTheme } from '@mui/material'
 import TrackList from './Tracklist'
 
-const Playlist = ({
-  playlistName: initialPlaylistName,
-  playlistTracks,
-  onNameChange,
-  onRemove,
-  onPlaylistSave
-}) => {
-  const [playlistName, setPlaylistName] = useState(initialPlaylistName)
+const Playlist = ({ playlistTracks, onRemove, onPlaylistSave }) => {
+  const [playlistName, setPlaylistName] = useState('New Playlist')
   const theme = useTheme()
 
-  useEffect(() => {
-    setPlaylistName(initialPlaylistName)
-  }, [initialPlaylistName])
-
   const handleNameChange = event => {
-    const updatedName = event.target.value
-    setPlaylistName(updatedName)
-    onNameChange(updatedName)
+    setPlaylistName(event.target.value)
   }
 
   const handlePlaylistSave = async event => {
     event.preventDefault()
-    try {
-      await onPlaylistSave(playlistTracks)
-      setPlaylistName('')
-    } catch (error) {
-      console.error('Error saving playlist:', error)
-      alert('Failed to save your playlist! Please try again later')
+
+    const success = await onPlaylistSave(playlistName)
+
+    if (success) {
+      setPlaylistName('New Playlist')
     }
   }
 
-  const isSaveDisabled = playlistTracks.length === 0 || playlistName === ''
+  const isSaveDisabled = playlistTracks.length === 0 || !playlistName.trim()
 
   return (
     <Box display="flex" flexDirection="column" gap={5} color="aliceblue" height="100%">

@@ -5,7 +5,6 @@ import { searchTracks, savePlaylist as savePlaylistToSpotify } from '../services
 const useSpotify = () => {
   const [searchResults, setSearchResults] = useState([])
   const [playlistTracks, setPlaylistTracks] = useState([])
-  const [playlistName, setPlaylistName] = useState('New Playlist')
   const [term, setTerm] = useState('')
   const [error, setError] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -71,30 +70,40 @@ const useSpotify = () => {
     setSearchResults(prevResults => [track, ...prevResults])
   }, [])
 
-  const changePlaylistName = useCallback(updatedPlaylistName => {
-    setPlaylistName(updatedPlaylistName)
-  }, [])
-
-  const savePlaylist = useCallback(async () => {
-    try {
-      const result = await savePlaylistToSpotify(playlistName, playlistTracks)
-      alert(`Playlist "${result.name}" saved to your Spotify account successfully!`)
-      setPlaylistName('New Playlist')
-      setPlaylistTracks([])
-      setError(null)
-    } catch (error) {
-      console.error('Error saving playlist:', error)
-      if (
-        error.message.includes('not authenticated') ||
-        error.message.includes('Session expired')
-      ) {
-        setError('Session expired. Please log in again.')
-        setIsAuthenticated(false)
-      } else {
-        setError(error.message || 'Failed to save playlist.')
+  const savePlaylist = useCallback(
+    async playlistName => {
+      if (!playlistName?.trim()) {
+        setError('Playlist name is required')
+        return false
       }
-    }
-  }, [playlistName, playlistTracks])
+
+      if (playlistTracks.length === 0) {
+        setError('Cannot save empty playlist')
+        return false
+      }
+
+      try {
+        const result = await savePlaylistToSpotify(playlistName, playlistTracks)
+        alert(`Playlist "${result.name}" saved to your Spotify account successfully!`)
+        setPlaylistTracks([])
+        setError(null)
+        return true // Signal success
+      } catch (error) {
+        console.error('Error saving playlist:', error)
+        if (
+          error.message.includes('not authenticated') ||
+          error.message.includes('Session expired')
+        ) {
+          setError('Session expired. Please log in again.')
+          setIsAuthenticated(false)
+        } else {
+          setError(error.message || 'Failed to save playlist.')
+        }
+        return false
+      }
+    },
+    [playlistTracks]
+  )
 
   const searchSpotify = useCallback(async term => {
     try {
@@ -135,21 +144,18 @@ const useSpotify = () => {
     setSearchResults([])
     setError(null)
     setPlaylistTracks([])
-    setPlaylistName('New Playlist')
     setTerm('')
   }, [])
 
   return {
     searchResults,
     playlistTracks,
-    playlistName,
     error,
     term,
     isAuthenticated,
     setTerm,
     addTrack,
     removeTrack,
-    changePlaylistName,
     savePlaylist,
     searchSpotify,
     clearAll

@@ -9,14 +9,12 @@ const App = () => {
   const {
     searchResults,
     playlistTracks,
-    playlistName,
     error,
     term,
     isAuthenticated,
     addTrack,
     setTerm,
     removeTrack,
-    changePlaylistName,
     savePlaylist,
     searchSpotify,
     clearAll
@@ -70,8 +68,6 @@ const App = () => {
         <Playlist
           playlistTracks={playlistTracks}
           onRemove={removeTrack}
-          playlistName={playlistName}
-          onNameChange={changePlaylistName}
           onPlaylistSave={savePlaylist}
         />
       </Box>

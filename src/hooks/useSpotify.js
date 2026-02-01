@@ -1,8 +1,10 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getAccessToken, startAuthFlow } from '../services/spotifyAuth'
 import { searchTracks, savePlaylist as savePlaylistToSpotify } from '../services/spotifyAPI'
+import { useToast } from '../contexts/ToastContext'
 
 const useSpotify = () => {
+  const { showSuccess, showError } = useToast()
   const [searchResults, setSearchResults] = useState([])
   const [playlistTracks, setPlaylistTracks] = useState([])
   const [term, setTerm] = useState('')
@@ -49,63 +51,60 @@ const useSpotify = () => {
     initializeAuth()
   }, [])
 
-  const addTrack = useCallback(
-    track => {
-      const isTrackInPlaylist = playlistTracks.some(playlistTrack => playlistTrack.id === track.id)
+  const addTrack = track => {
+    setPlaylistTracks(prevTracks => {
+      const isTrackInPlaylist = prevTracks.some(playlistTrack => playlistTrack.id === track.id)
+      if (isTrackInPlaylist) return prevTracks
+      return [...prevTracks, track]
+    })
+    setSearchResults(prevResults =>
+      prevResults.filter(playlistTrack => playlistTrack.id !== track.id)
+    )
+  }
 
-      if (!isTrackInPlaylist) {
-        setPlaylistTracks(prevTracks => [...prevTracks, track])
-        setSearchResults(prevResults =>
-          prevResults.filter(playlistTrack => playlistTrack.id !== track.id)
-        )
-      }
-    },
-    [playlistTracks]
-  )
-
-  const removeTrack = useCallback(track => {
+  const removeTrack = track => {
     setPlaylistTracks(prevTracks =>
       prevTracks.filter(playlistTrack => playlistTrack.id !== track.id)
     )
     setSearchResults(prevResults => [track, ...prevResults])
-  }, [])
+  }
 
-  const savePlaylist = useCallback(
-    async playlistName => {
-      if (!playlistName?.trim()) {
-        setError('Playlist name is required')
-        return false
+  const savePlaylist = async playlistName => {
+    if (!playlistName?.trim()) {
+      setError('Playlist name is required')
+      return false
+    }
+
+    if (playlistTracks.length === 0) {
+      setError('Cannot save empty playlist')
+      return false
+    }
+
+    try {
+      const result = await savePlaylistToSpotify(playlistName, playlistTracks)
+      showSuccess(`Playlist "${result.name}" saved to your Spotify account successfully!`)
+      setPlaylistTracks([])
+      setError(null)
+      return true
+    } catch (error) {
+      console.error('Error saving playlist:', error)
+      const errorMessage = error.message || 'Failed to save playlist.'
+      if (
+        error.message.includes('not authenticated') ||
+        error.message.includes('Session expired')
+      ) {
+        showError('Session expired. Please log in again.')
+        setError('Session expired. Please log in again.')
+        setIsAuthenticated(false)
+      } else {
+        showError(errorMessage)
+        setError(errorMessage)
       }
+      return false
+    }
+  }
 
-      if (playlistTracks.length === 0) {
-        setError('Cannot save empty playlist')
-        return false
-      }
-
-      try {
-        const result = await savePlaylistToSpotify(playlistName, playlistTracks)
-        alert(`Playlist "${result.name}" saved to your Spotify account successfully!`)
-        setPlaylistTracks([])
-        setError(null)
-        return true // Signal success
-      } catch (error) {
-        console.error('Error saving playlist:', error)
-        if (
-          error.message.includes('not authenticated') ||
-          error.message.includes('Session expired')
-        ) {
-          setError('Session expired. Please log in again.')
-          setIsAuthenticated(false)
-        } else {
-          setError(error.message || 'Failed to save playlist.')
-        }
-        return false
-      }
-    },
-    [playlistTracks]
-  )
-
-  const searchSpotify = useCallback(async term => {
+  const searchSpotify = async term => {
     try {
       // Check if we need to authenticate first
       const token = await getAccessToken()
@@ -130,22 +129,26 @@ const useSpotify = () => {
         error.message.includes('not authenticated') ||
         error.message.includes('Session expired')
       ) {
-        setError('Please log in to search for tracks.')
+        const errorMessage = 'Please log in to search for tracks.'
+        showError(errorMessage)
+        setError(errorMessage)
         setIsAuthenticated(false)
         // Optionally start auth flow automatically
         await startAuthFlow()
       } else {
-        setError('An error occurred while fetching data.')
+        const errorMessage = 'An error occurred while fetching data.'
+        showError(errorMessage)
+        setError(errorMessage)
       }
     }
-  }, [])
+  }
 
-  const clearAll = useCallback(() => {
+  const clearAll = () => {
     setSearchResults([])
     setError(null)
     setPlaylistTracks([])
     setTerm('')
-  }, [])
+  }
 
   return {
     searchResults,

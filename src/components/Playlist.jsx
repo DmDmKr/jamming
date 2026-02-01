@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Box, TextField, Button, useTheme } from '@mui/material'
-import TrackList from './Tracklist'
+import TrackList from './TrackList'
 
-const Playlist = ({ playlistTracks, onRemove, onPlaylistSave }) => {
+const Playlist = ({ playlistTracks, onRemove, onPlaylistSave, isLoading }) => {
   const [playlistName, setPlaylistName] = useState('New Playlist')
   const theme = useTheme()
 
@@ -20,7 +20,7 @@ const Playlist = ({ playlistTracks, onRemove, onPlaylistSave }) => {
     }
   }
 
-  const isSaveDisabled = playlistTracks.length === 0 || !playlistName.trim()
+  const isSaveDisabled = playlistTracks.length === 0 || !playlistName.trim() || isLoading
 
   return (
     <Box display="flex" flexDirection="column" gap={5} color="aliceblue" height="100%">
@@ -59,7 +59,7 @@ const Playlist = ({ playlistTracks, onRemove, onPlaylistSave }) => {
             maxWidth: theme.spacing(150)
           }}
         >
-          Save to Spotify
+          {isLoading ? 'Saving...' : 'Save to Spotify'}
         </Button>
       </Box>
     </Box>

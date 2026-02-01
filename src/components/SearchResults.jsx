@@ -1,20 +1,11 @@
 import { Box, Typography, useTheme } from '@mui/material'
-import TrackList from './Tracklist'
+import TrackList from './TrackList'
 import BoxWithMessage from './BoxWithMessage'
 
-const SearchResults = ({ searchResults, error, onAdd }) => {
+const SearchResults = ({ searchResults, onAdd }) => {
   const theme = useTheme()
-  const getMessage = () => {
-    if (error) {
-      return error
-    }
-    if (searchResults.length === 0) {
-      return 'Please search for some tracks on Spotify!'
-    }
-    return null
-  }
 
-  const message = getMessage()
+  const showMessage = searchResults.length === 0
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={5} color="aliceblue">
@@ -41,8 +32,8 @@ const SearchResults = ({ searchResults, error, onAdd }) => {
           overflowY: 'auto'
         }}
       >
-        {message ? (
-          <BoxWithMessage message={message} />
+        {showMessage ? (
+          <BoxWithMessage message="Please search for some tracks on Spotify!" />
         ) : (
           <TrackList tracks={searchResults} buttonType="search" onAdd={onAdd} />
         )}

@@ -9,9 +9,9 @@ const App = () => {
   const {
     searchResults,
     playlistTracks,
-    error,
     term,
     isAuthenticated,
+    isLoading,
     addTrack,
     setTerm,
     removeTrack,
@@ -48,6 +48,7 @@ const App = () => {
         searchSpotify={searchSpotify}
         handleClear={clearAll}
         isAuthenticated={isAuthenticated}
+        isLoading={isLoading}
       />
       <Box
         display="grid"
@@ -64,19 +65,14 @@ const App = () => {
           }
         }}
       >
-        <SearchResults searchResults={searchResults} onAdd={addTrack} error={error} />
+        <SearchResults searchResults={searchResults} onAdd={addTrack} />
         <Playlist
           playlistTracks={playlistTracks}
           onRemove={removeTrack}
           onPlaylistSave={savePlaylist}
+          isLoading={isLoading}
         />
       </Box>
-
-      {error && (
-        <Typography className="error-message" sx={{ padding: '1rem', color: 'red' }}>
-          {error}
-        </Typography>
-      )}
     </Box>
   )
 }

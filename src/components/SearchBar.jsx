@@ -1,6 +1,6 @@
 import { Box, TextField, Button, useTheme } from '@mui/material'
 
-const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated }) => {
+const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated, isLoading }) => {
   const theme = useTheme()
 
   const handleTermChange = event => {
@@ -40,8 +40,8 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated 
         fullWidth
       />
       <Box display="flex" width="100%" justifyContent="space-between">
-        <Button onClick={handleSearch} variant="contained" disabled={!term}>
-          Search
+        <Button onClick={handleSearch} variant="contained" disabled={!term || isLoading}>
+          {isLoading ? 'Loading...' : 'Search'}
         </Button>
         <Button onClick={handleClear} variant="outlined">
           Clear

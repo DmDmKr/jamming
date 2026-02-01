@@ -8,8 +8,8 @@ const useSpotify = () => {
   const [searchResults, setSearchResults] = useState([])
   const [playlistTracks, setPlaylistTracks] = useState([])
   const [term, setTerm] = useState('')
-  const [error, setError] = useState(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -71,20 +71,20 @@ const useSpotify = () => {
 
   const savePlaylist = async playlistName => {
     if (!playlistName?.trim()) {
-      setError('Playlist name is required')
+      showError('Playlist name is required')
       return false
     }
 
     if (playlistTracks.length === 0) {
-      setError('Cannot save empty playlist')
+      showError('Cannot save empty playlist')
       return false
     }
 
+    setIsLoading(true)
     try {
       const result = await savePlaylistToSpotify(playlistName, playlistTracks)
       showSuccess(`Playlist "${result.name}" saved to your Spotify account successfully!`)
       setPlaylistTracks([])
-      setError(null)
       return true
     } catch (error) {
       console.error('Error saving playlist:', error)
@@ -94,17 +94,18 @@ const useSpotify = () => {
         error.message.includes('Session expired')
       ) {
         showError('Session expired. Please log in again.')
-        setError('Session expired. Please log in again.')
         setIsAuthenticated(false)
       } else {
         showError(errorMessage)
-        setError(errorMessage)
       }
       return false
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const searchSpotify = async term => {
+    setIsLoading(true)
     try {
       // Check if we need to authenticate first
       const token = await getAccessToken()
@@ -117,10 +118,9 @@ const useSpotify = () => {
       const tracks = await searchTracks(term)
       if (tracks.length > 0) {
         setSearchResults(tracks)
-        setError(null)
       } else {
         setSearchResults([])
-        setError('No tracks found.')
+        showError('No tracks found.')
       }
     } catch (error) {
       console.error('Search error:', error)
@@ -129,23 +129,20 @@ const useSpotify = () => {
         error.message.includes('not authenticated') ||
         error.message.includes('Session expired')
       ) {
-        const errorMessage = 'Please log in to search for tracks.'
-        showError(errorMessage)
-        setError(errorMessage)
+        showError('Please log in to search for tracks.')
         setIsAuthenticated(false)
         // Optionally start auth flow automatically
         await startAuthFlow()
       } else {
-        const errorMessage = 'An error occurred while fetching data.'
-        showError(errorMessage)
-        setError(errorMessage)
+        showError('An error occurred while fetching data.')
       }
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const clearAll = () => {
     setSearchResults([])
-    setError(null)
     setPlaylistTracks([])
     setTerm('')
   }
@@ -153,9 +150,9 @@ const useSpotify = () => {
   return {
     searchResults,
     playlistTracks,
-    error,
     term,
     isAuthenticated,
+    isLoading,
     setTerm,
     addTrack,
     removeTrack,

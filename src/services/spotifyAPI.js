@@ -1,9 +1,40 @@
-import httpClient from '../utils/httpClient'
+import { getAccessToken } from './spotifyAuth'
 
+const BASE_URL = 'https://api.spotify.com/v1'
 const userId = import.meta.env.VITE_SPOTIFY_USER_ID
 
 if (!userId) {
   console.error('Missing VITE_SPOTIFY_USER_ID in .env file')
+}
+
+const apiRequest = async (endpoint, options = {}) => {
+  const token = await getAccessToken()
+
+  if (!token) {
+    throw new Error('Not authenticated')
+  }
+
+  const config = {
+    ...options,
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      ...options.headers
+    }
+  }
+
+  const response = await fetch(`${BASE_URL}${endpoint}`, config)
+
+  if (response.status === 401) {
+    throw new Error('Session expired')
+  }
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({}))
+    throw new Error(error.error?.message || `Request failed: ${response.statusText}`)
+  }
+
+  return await response.json()
 }
 
 // Transform track data from Spotify API format to app format
@@ -20,33 +51,27 @@ export const searchTracks = async query => {
     return []
   }
 
-  try {
-    const data = await httpClient.get('/search', {
-      q: query,
-      type: 'track',
-      limit: 20
-    })
+  const params = new URLSearchParams({
+    q: query,
+    type: 'track',
+    limit: '20'
+  })
 
-    return data.tracks?.items?.map(transformTrack) || []
-  } catch (error) {
-    console.error('Search error:', error)
-    throw error
-  }
+  const data = await apiRequest(`/search?${params}`)
+  return data.tracks?.items?.map(transformTrack) || []
 }
 
 export const createPlaylist = async (name, description = 'Created with Jamming') => {
-  try {
-    const playlist = await httpClient.post(`/users/${userId}/playlists`, {
+  const playlist = await apiRequest(`/users/${userId}/playlists`, {
+    method: 'POST',
+    body: JSON.stringify({
       name,
       description,
       public: true
     })
+  })
 
-    return playlist.id
-  } catch (error) {
-    console.error('Create playlist error:', error)
-    throw error
-  }
+  return playlist.id
 }
 
 export const addTracksToPlaylist = async (playlistId, trackUris) => {
@@ -54,14 +79,12 @@ export const addTracksToPlaylist = async (playlistId, trackUris) => {
     throw new Error('No tracks to add')
   }
 
-  try {
-    await httpClient.post(`/playlists/${playlistId}/tracks`, {
+  await apiRequest(`/playlists/${playlistId}/tracks`, {
+    method: 'POST',
+    body: JSON.stringify({
       uris: trackUris
     })
-  } catch (error) {
-    console.error('Add tracks error:', error)
-    throw error
-  }
+  })
 }
 
 export const savePlaylist = async (name, tracks) => {
@@ -73,14 +96,9 @@ export const savePlaylist = async (name, tracks) => {
     throw new Error('Cannot save empty playlist')
   }
 
-  try {
-    const playlistId = await createPlaylist(name)
-    const trackUris = tracks.map(track => track.uri)
-    await addTracksToPlaylist(playlistId, trackUris)
+  const playlistId = await createPlaylist(name)
+  const trackUris = tracks.map(track => track.uri)
+  await addTracksToPlaylist(playlistId, trackUris)
 
-    return { success: true, playlistId, name }
-  } catch (error) {
-    console.error('Save playlist error:', error)
-    throw error
-  }
+  return { success: true, playlistId, name }
 }

@@ -40,8 +40,8 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated 
         fullWidth
       />
       <Box display="flex" width="100%" justifyContent="space-between">
-        <Button onClick={handleSearch} variant="contained" disabled={!term || !isAuthenticated}>
-          {isAuthenticated ? 'Search' : 'Authenticating...'}
+        <Button onClick={handleSearch} variant="contained" disabled={!term}>
+          Search
         </Button>
         <Button onClick={handleClear} variant="outlined">
           Clear

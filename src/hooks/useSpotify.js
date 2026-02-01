@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
-import Spotify from '../util/Spotify'
+import { getAccessToken, startAuthFlow } from '../services/spotifyAuth'
+import { searchTracks, savePlaylist as savePlaylistToSpotify } from '../services/spotifyAPI'
 
 const useSpotify = () => {
   const [searchResults, setSearchResults] = useState([])
@@ -10,12 +11,38 @@ const useSpotify = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const initializeAuth = () => {
+    const initializeAuth = async () => {
       try {
-        Spotify.getAccessToken()
-        setIsAuthenticated(true)
+        // First check if there's an authorization code in the URL
+        const urlParams = new URLSearchParams(window.location.search)
+        const code = urlParams.get('code')
+
+        if (code) {
+          // We're returning from Spotify - exchange the code
+          console.log('Authorization code detected, exchanging for token...')
+          const token = await getAccessToken()
+          if (token) {
+            console.log('Token obtained successfully')
+            setIsAuthenticated(true)
+          } else {
+            console.error('Failed to exchange code for token')
+            setIsAuthenticated(false)
+          }
+        } else {
+          // No code in URL - check if we have a stored valid token
+          const storedToken = localStorage.getItem('spotify_access_token')
+          const expiresAt = localStorage.getItem('spotify_token_expires_at')
+
+          if (storedToken && expiresAt && Date.now() < parseInt(expiresAt)) {
+            console.log('Valid stored token found')
+            setIsAuthenticated(true)
+          } else {
+            console.log('No valid token - user needs to authenticate')
+            setIsAuthenticated(false)
+          }
+        }
       } catch (error) {
-        console.error('Authentication failed:', error)
+        console.error('Authentication initialization failed:', error)
         setIsAuthenticated(false)
       }
     }
@@ -50,38 +77,59 @@ const useSpotify = () => {
 
   const savePlaylist = useCallback(async () => {
     try {
-      await Spotify.savePlaylist(playlistName, playlistTracks)
-      setPlaylistName('')
+      const result = await savePlaylistToSpotify(playlistName, playlistTracks)
+      alert(`Playlist "${result.name}" saved to your Spotify account successfully!`)
+      setPlaylistName('New Playlist')
       setPlaylistTracks([])
+      setError(null)
     } catch (error) {
       console.error('Error saving playlist:', error)
-      setError('An error occurred while saving the playlist.')
+      if (
+        error.message.includes('not authenticated') ||
+        error.message.includes('Session expired')
+      ) {
+        setError('Session expired. Please log in again.')
+        setIsAuthenticated(false)
+      } else {
+        setError(error.message || 'Failed to save playlist.')
+      }
     }
   }, [playlistName, playlistTracks])
 
-  const searchSpotify = useCallback(
-    async term => {
-      if (!isAuthenticated) {
-        setError('Please wait for authentication to complete.')
+  const searchSpotify = useCallback(async term => {
+    try {
+      // Check if we need to authenticate first
+      const token = await getAccessToken()
+      if (!token) {
+        // Start auth flow
+        await startAuthFlow()
         return
       }
 
-      try {
-        const tracks = await Spotify.search(term)
-        if (tracks.length > 0) {
-          setSearchResults(tracks)
-          setError(null)
-        } else {
-          setSearchResults([])
-          setError('No tracks found.')
-        }
-      } catch (error) {
+      const tracks = await searchTracks(term)
+      if (tracks.length > 0) {
+        setSearchResults(tracks)
+        setError(null)
+      } else {
         setSearchResults([])
+        setError('No tracks found.')
+      }
+    } catch (error) {
+      console.error('Search error:', error)
+      setSearchResults([])
+      if (
+        error.message.includes('not authenticated') ||
+        error.message.includes('Session expired')
+      ) {
+        setError('Please log in to search for tracks.')
+        setIsAuthenticated(false)
+        // Optionally start auth flow automatically
+        await startAuthFlow()
+      } else {
         setError('An error occurred while fetching data.')
       }
-    },
-    [isAuthenticated]
-  )
+    }
+  }, [])
 
   const clearAll = useCallback(() => {
     setSearchResults([])

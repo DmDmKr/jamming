@@ -38,9 +38,6 @@ const storeToken = (token, expiresIn) => {
   accessToken = token
   localStorage.setItem(TOKEN_KEY, token)
   localStorage.setItem(EXPIRY_KEY, Date.now() + expiresIn * 1000)
-
-  // Auto-clear when expired
-  setTimeout(() => clearToken(), expiresIn * 1000)
 }
 
 const clearToken = () => {

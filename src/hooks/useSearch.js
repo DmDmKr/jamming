@@ -2,9 +2,11 @@ import { useState, useRef } from 'react'
 import { getAccessToken, startAuthFlow } from '../services/spotifyAuth'
 import { searchTracks } from '../services/spotifyAPI'
 import { useToast } from '../contexts/ToastContext'
+import { useAuth } from '../contexts/AuthContext'
 
-const useSearch = setIsAuthenticated => {
+const useSearch = () => {
   const { showError } = useToast()
+  const { setIsAuthenticated } = useAuth()
   const [searchResults, setSearchResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const abortControllerRef = useRef(null)
@@ -49,9 +51,7 @@ const useSearch = setIsAuthenticated => {
         error.message.includes('Session expired')
       ) {
         showError('Please log in to search for tracks.')
-        if (setIsAuthenticated) {
-          setIsAuthenticated(false)
-        }
+        setIsAuthenticated(false)
         // Optionally start auth flow automatically
         await startAuthFlow()
       } else {

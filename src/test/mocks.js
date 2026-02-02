@@ -83,3 +83,15 @@ vi.mock('../services/spotifyAuth', () => ({
   }),
   startAuthFlow: vi.fn()
 }))
+
+// Mock AuthContext to always return authenticated user
+vi.mock('../contexts/AuthContext', () => ({
+  AuthProvider: ({ children }) => children,
+  useAuth: () => ({
+    isAuthenticated: true,
+    setIsAuthenticated: vi.fn(),
+    isInitializing: false,
+    login: vi.fn(),
+    logout: vi.fn()
+  })
+}))

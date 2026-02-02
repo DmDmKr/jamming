@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { savePlaylist as savePlaylistToSpotify } from '../services/spotifyAPI'
 import { useToast } from '../contexts/ToastContext'
+import { useAuth } from '../contexts/AuthContext'
 
-const usePlaylist = setIsAuthenticated => {
+const usePlaylist = () => {
   const { showSuccess, showError } = useToast()
+  const { setIsAuthenticated } = useAuth()
   const [playlistTracks, setPlaylistTracks] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
@@ -46,9 +48,7 @@ const usePlaylist = setIsAuthenticated => {
         error.message.includes('Session expired')
       ) {
         showError('Session expired. Please log in again.')
-        if (setIsAuthenticated) {
-          setIsAuthenticated(false)
-        }
+        setIsAuthenticated(false)
       } else {
         showError(errorMessage)
       }

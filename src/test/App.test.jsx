@@ -5,15 +5,18 @@ import App from '../components/App'
 import { ThemeProvider } from '@mui/material/styles'
 import theme from '../theme'
 import { ToastProvider } from '../contexts/ToastContext'
+import { AuthProvider } from '../contexts/AuthContext'
 import { mockTracks, mockPlaylistResponse } from './mocks'
 import * as spotifyAPI from '../services/spotifyAPI'
 
 const renderApp = () => {
   return render(
     <ThemeProvider theme={theme}>
-      <ToastProvider>
-        <App />
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <App />
+        </ToastProvider>
+      </AuthProvider>
     </ThemeProvider>
   )
 }

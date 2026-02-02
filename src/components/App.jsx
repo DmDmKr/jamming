@@ -1,14 +1,14 @@
 import SearchBar from './SearchBar'
 import SearchResults from './SearchResults'
 import Playlist from './Playlist'
-import useAuth from '../hooks/useAuth'
 import useSearch from '../hooks/useSearch'
 import usePlaylist from '../hooks/usePlaylist'
+import { useAuth } from '../contexts/AuthContext'
 import backgroundImage from '../assets/background_photo_desktop.jpg'
 import { Box, Typography } from '@mui/material'
 
 const App = () => {
-  const { isAuthenticated, setIsAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth()
   const {
     searchResults,
     isLoading: searchLoading,
@@ -16,7 +16,7 @@ const App = () => {
     removeFromResults,
     addToResults,
     clearResults
-  } = useSearch(setIsAuthenticated)
+  } = useSearch()
   const {
     playlistTracks,
     isLoading: playlistLoading,
@@ -24,7 +24,7 @@ const App = () => {
     removeTrack,
     savePlaylist,
     clearPlaylist
-  } = usePlaylist(setIsAuthenticated)
+  } = usePlaylist()
 
   const handleAddTrack = track => {
     addTrack(track)

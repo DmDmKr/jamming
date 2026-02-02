@@ -1,8 +1,11 @@
-import { useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { getAccessToken, startAuthFlow } from '../services/spotifyAuth'
 
-const useAuth = () => {
+const AuthContext = createContext(null)
+
+export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isInitializing, setIsInitializing] = useState(true)
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -38,11 +41,40 @@ const useAuth = () => {
       } catch (error) {
         console.error('Authentication initialization failed:', error)
         setIsAuthenticated(false)
+      } finally {
+        setIsInitializing(false)
       }
     }
 
     initializeAuth()
   }, [])
+
+  // Monitor token expiry and auto-logout when expired
+  useEffect(() => {
+    if (!isAuthenticated) return
+
+    const expiresAt = localStorage.getItem('spotify_token_expires_at')
+    if (!expiresAt) return
+
+    const timeUntilExpiry = parseInt(expiresAt) - Date.now()
+
+    if (timeUntilExpiry <= 0) {
+      // Token already expired
+      logout()
+      return
+    }
+
+    // Set timeout to logout when token expires
+    console.log(`Token will expire in ${Math.round(timeUntilExpiry / 1000 / 60)} minutes`)
+    const timeoutId = setTimeout(() => {
+      console.log('Token expired, logging out')
+      logout()
+    }, timeUntilExpiry)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
+  }, [isAuthenticated])
 
   const login = async () => {
     await startAuthFlow()
@@ -54,12 +86,25 @@ const useAuth = () => {
     localStorage.removeItem('spotify_token_expires_at')
   }
 
-  return {
-    isAuthenticated,
-    setIsAuthenticated,
-    login,
-    logout
-  }
+  return (
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        setIsAuthenticated,
+        isInitializing,
+        login,
+        logout
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
-export default useAuth
+export const useAuth = () => {
+  const context = useContext(AuthContext)
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider')
+  }
+  return context
+}

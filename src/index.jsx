@@ -5,6 +5,7 @@ import App from './components/App'
 import { ThemeProvider } from '@mui/material/styles'
 import theme from './theme'
 import { ToastProvider } from './contexts/ToastContext'
+import { AuthProvider } from './contexts/AuthContext'
 import ErrorBoundary from './components/ErrorBoundary'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
@@ -12,9 +13,11 @@ root.render(
   <React.StrictMode>
     <ErrorBoundary>
       <ThemeProvider theme={theme}>
-        <ToastProvider>
-          <App />
-        </ToastProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </AuthProvider>
       </ThemeProvider>
     </ErrorBoundary>
   </React.StrictMode>

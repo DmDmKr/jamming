@@ -4,10 +4,13 @@ A React application that allows users to search the Spotify library, create cust
 
 ## Features
 
-- Search for tracks on Spotify
-- Create custom playlists
-- Add and remove tracks from playlists
+- Secure OAuth 2.0 PKCE authentication flow
+- Real-time search of Spotify's music library
+- Create and customize playlists
+- Add and remove tracks with immediate feedback
 - Save playlists directly to your Spotify account
+- Accessible UI with ARIA labels and keyboard navigation
+- Responsive design for mobile and desktop
 
 ## Setup Instructions
 
@@ -24,7 +27,8 @@ A React application that allows users to search the Spotify library, create cust
 3. Click "Create an App"
 4. Fill in the app name and description
 5. Once created, you'll see your **Client ID**
-6. Click "Edit Settings" and add `http://localhost:3000/callback` to **Redirect URIs**
+6. Click "Edit Settings" and add `http://127.0.0.1:3000/callback` to **Redirect URIs**
+   - **Important**: Use `127.0.0.1` not `localhost` to avoid redirect URI mismatch errors
 7. Save your settings
 
 ### 2. Find Your Spotify User ID
@@ -88,16 +92,49 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 Previews the production build locally.
 
+### `npm test`
+
+Runs the test suite using Vitest.\
+Tests run in watch mode by default during development.
+
 ## Security Note
 
 **IMPORTANT**: Never commit your `.env` file to version control. It contains sensitive API credentials. The `.env` file is already included in `.gitignore`.
 
 ## Technologies Used
 
-- React 18
-- Vite
-- Material-UI (MUI)
-- Spotify Web API
+- **React 18** - Modern React with hooks
+- **Vite** - Fast build tool and dev server
+- **Material-UI v6** - Component library with accessibility support
+- **Spotify Web API** - OAuth 2.0 PKCE authentication flow
+- **Vitest** - Fast unit testing framework with React Testing Library
+
+## Testing
+
+The application includes integration tests covering key user workflows:
+
+- **Search Flow**: Track search, result display, adding/removing tracks
+- **Playlist Management**: Creating playlists, naming, saving to Spotify
+- **Error Handling**: Network failures, authentication errors
+- **Loading States**: UI feedback during asynchronous operations
+- **Error Boundary**: Graceful handling of component crashes
+
+Tests are located in `src/test/` with the following structure:
+
+- `App.test.jsx` - Integration tests for main application workflows
+- `ErrorBoundary.test.jsx` - Error boundary component tests
+- `setup.js` - Test environment configuration
+- `mocks.js` - Shared mock data and service mocks
+
+Run tests with `npm test` to ensure application reliability.
+
+## Architecture
+
+- **Service Layer**: Modular API services (`spotifyAuth.js`, `spotifyAPI.js`)
+- **Custom Hooks**: Centralized state management (`useSpotify`)
+- **Context API**: Global toast notifications (`ToastContext`)
+- **Error Boundary**: Graceful error handling for component crashes
+- **Accessibility**: ARIA labels, semantic HTML, keyboard navigation
 
 ## License
 

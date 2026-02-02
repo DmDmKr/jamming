@@ -22,6 +22,7 @@ const App = () => {
 
   return (
     <Box
+      component="main"
       gap={5}
       display="flex"
       height="100%"
@@ -39,7 +40,7 @@ const App = () => {
         backgroundRepeat: 'no-repeat'
       }}
     >
-      <Typography variant="h1" fontSize="4rem" color="white">
+      <Typography variant="h1" component="h1" fontSize="4rem" color="white">
         Jamming
       </Typography>
       <SearchBar

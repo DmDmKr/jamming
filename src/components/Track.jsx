@@ -32,9 +32,15 @@ const Track = ({ track, buttonType, onAdd, onRemove }) => {
       </Box>
       <Button
         onClick={buttonType === 'search' ? handleAdd : handleRemove}
+        aria-label={
+          buttonType === 'search'
+            ? `Add ${track.name} to playlist`
+            : `Remove ${track.name} from playlist`
+        }
         sx={{
           padding: '0.5rem',
-          transition: 'color 0.25s'
+          transition: 'color 0.25s',
+          minWidth: '2.5rem'
         }}
       >
         {buttonType === 'search' ? '+' : '-'}

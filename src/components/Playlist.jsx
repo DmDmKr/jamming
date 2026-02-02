@@ -23,12 +23,25 @@ const Playlist = ({ playlistTracks, onRemove, onPlaylistSave, isLoading }) => {
   const isSaveDisabled = playlistTracks.length === 0 || !playlistName.trim() || isLoading
 
   return (
-    <Box display="flex" flexDirection="column" gap={5} color="aliceblue" height="100%">
+    <Box
+      component="section"
+      display="flex"
+      flexDirection="column"
+      gap={5}
+      color="aliceblue"
+      height="100%"
+      aria-label="Your playlist"
+    >
       <Box display="flex" justifyContent="center" alignItems="center" height="4rem">
         <TextField
           placeholder="Enter playlist name"
           value={playlistName}
           onChange={handleNameChange}
+          slotProps={{
+            htmlInput: {
+              'aria-label': 'Playlist name'
+            }
+          }}
           sx={{
             width: '100%',
             maxWidth: theme.spacing(150),
@@ -54,6 +67,7 @@ const Playlist = ({ playlistTracks, onRemove, onPlaylistSave, isLoading }) => {
         <Button
           onClick={handlePlaylistSave}
           disabled={isSaveDisabled}
+          aria-label="Save playlist to Spotify"
           sx={{
             width: '100%',
             maxWidth: theme.spacing(150)

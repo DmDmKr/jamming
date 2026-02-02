@@ -23,6 +23,8 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated,
 
   return (
     <Box
+      component="form"
+      onSubmit={handleSearch}
       display="flex"
       flexDirection="column"
       width="100%"
@@ -30,6 +32,7 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated,
       gap={10}
       margin="0 auto"
       maxWidth={theme.spacing(150)}
+      role="search"
     >
       <TextField
         variant="outlined"
@@ -38,12 +41,26 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated,
         onKeyDown={handleEnterKeyPress}
         value={term}
         fullWidth
+        slotProps={{
+          htmlInput: {
+            'aria-label': 'Search for songs'
+          }
+        }}
       />
       <Box display="flex" width="100%" justifyContent="space-between">
-        <Button onClick={handleSearch} variant="contained" disabled={!term || isLoading}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={!term || isLoading}
+          aria-label="Search for tracks"
+        >
           {isLoading ? 'Loading...' : 'Search'}
         </Button>
-        <Button onClick={handleClear} variant="outlined">
+        <Button
+          onClick={handleClear}
+          variant="outlined"
+          aria-label="Clear search results and playlist"
+        >
           Clear
         </Button>
       </Box>

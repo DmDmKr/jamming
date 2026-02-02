@@ -8,9 +8,18 @@ const SearchResults = ({ searchResults, onAdd }) => {
   const showMessage = searchResults.length === 0
 
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" gap={5} color="aliceblue">
+    <Box
+      component="section"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap={5}
+      color="aliceblue"
+      aria-label="Search results"
+    >
       <Typography
         variant="h2"
+        component="h2"
         fontSize="2rem"
         sx={{
           display: 'flex',
@@ -31,6 +40,8 @@ const SearchResults = ({ searchResults, onAdd }) => {
         sx={{
           overflowY: 'auto'
         }}
+        role="region"
+        aria-live="polite"
       >
         {showMessage ? (
           <BoxWithMessage message="Please search for some tracks on Spotify!" />

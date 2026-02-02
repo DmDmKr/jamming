@@ -51,7 +51,7 @@ describe('Jamming Integration Tests', () => {
       await user.click(searchButton)
 
       await waitFor(() => {
-        expect(spotifyAPI.searchTracks).toHaveBeenCalledWith('test query')
+        expect(spotifyAPI.searchTracks).toHaveBeenCalledWith('test query', expect.any(AbortSignal))
       })
 
       expect(await screen.findByText('Test Song 1')).toBeInTheDocument()

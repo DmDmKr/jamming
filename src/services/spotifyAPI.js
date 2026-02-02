@@ -20,7 +20,8 @@ const apiRequest = async (endpoint, options = {}) => {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
       ...options.headers
-    }
+    },
+    signal: options.signal
   }
 
   const response = await fetch(`${BASE_URL}${endpoint}`, config)
@@ -46,7 +47,7 @@ const transformTrack = item => ({
   uri: item.uri
 })
 
-export const searchTracks = async query => {
+export const searchTracks = async (query, signal) => {
   if (!query?.trim()) {
     return []
   }
@@ -57,7 +58,7 @@ export const searchTracks = async query => {
     limit: '20'
   })
 
-  const data = await apiRequest(`/search?${params}`)
+  const data = await apiRequest(`/search?${params}`, { signal })
   return data.tracks?.items?.map(transformTrack) || []
 }
 

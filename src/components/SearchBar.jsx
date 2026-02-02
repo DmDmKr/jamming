@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Box, TextField, Button, useTheme } from '@mui/material'
 
-const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated, isLoading }) => {
+const SearchBar = ({ searchSpotify, handleClear, isLoading }) => {
   const theme = useTheme()
+  const [term, setTerm] = useState('')
 
   const handleTermChange = event => {
     setTerm(event.target.value)
@@ -19,6 +21,11 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated,
     if (event.key === 'Enter') {
       handleSearch(event)
     }
+  }
+
+  const handleClearClick = () => {
+    setTerm('')
+    handleClear()
   }
 
   return (
@@ -57,7 +64,7 @@ const SearchBar = ({ term, setTerm, searchSpotify, handleClear, isAuthenticated,
           {isLoading ? 'Loading...' : 'Search'}
         </Button>
         <Button
-          onClick={handleClear}
+          onClick={handleClearClick}
           variant="outlined"
           aria-label="Clear search results and playlist"
         >

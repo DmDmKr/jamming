@@ -1,24 +1,47 @@
 import SearchBar from './SearchBar'
 import SearchResults from './SearchResults'
 import Playlist from './Playlist'
-import useSpotify from '../hooks/useSpotify'
+import useAuth from '../hooks/useAuth'
+import useSearch from '../hooks/useSearch'
+import usePlaylist from '../hooks/usePlaylist'
 import backgroundImage from '../assets/background_photo_desktop.jpg'
 import { Box, Typography } from '@mui/material'
 
 const App = () => {
+  const { isAuthenticated, setIsAuthenticated } = useAuth()
   const {
     searchResults,
+    isLoading: searchLoading,
+    search,
+    removeFromResults,
+    addToResults,
+    clearResults
+  } = useSearch(setIsAuthenticated)
+  const {
     playlistTracks,
-    term,
-    isAuthenticated,
-    isLoading,
+    isLoading: playlistLoading,
     addTrack,
-    setTerm,
     removeTrack,
     savePlaylist,
-    searchSpotify,
-    clearAll
-  } = useSpotify()
+    clearPlaylist
+  } = usePlaylist(setIsAuthenticated)
+
+  const handleAddTrack = track => {
+    addTrack(track)
+    removeFromResults(track.id)
+  }
+
+  const handleRemoveTrack = track => {
+    removeTrack(track)
+    addToResults(track)
+  }
+
+  const handleClearAll = () => {
+    clearResults()
+    clearPlaylist()
+  }
+
+  const isLoading = searchLoading || playlistLoading
 
   return (
     <Box
@@ -44,10 +67,8 @@ const App = () => {
         Jamming
       </Typography>
       <SearchBar
-        term={term}
-        setTerm={setTerm}
-        searchSpotify={searchSpotify}
-        handleClear={clearAll}
+        searchSpotify={search}
+        handleClear={handleClearAll}
         isAuthenticated={isAuthenticated}
         isLoading={isLoading}
       />
@@ -66,12 +87,12 @@ const App = () => {
           }
         }}
       >
-        <SearchResults searchResults={searchResults} onAdd={addTrack} />
+        <SearchResults searchResults={searchResults} onAdd={handleAddTrack} />
         <Playlist
           playlistTracks={playlistTracks}
-          onRemove={removeTrack}
+          onRemove={handleRemoveTrack}
           onPlaylistSave={savePlaylist}
-          isLoading={isLoading}
+          isLoading={playlistLoading}
         />
       </Box>
     </Box>

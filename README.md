@@ -130,11 +130,30 @@ Run tests with `npm test` to ensure application reliability.
 
 ## Architecture
 
-- **Service Layer**: Modular API services (`spotifyAuth.js`, `spotifyAPI.js`)
-- **Custom Hooks**: Centralized state management (`useSpotify`)
-- **Context API**: Global toast notifications (`ToastContext`)
-- **Error Boundary**: Graceful error handling for component crashes
-- **Accessibility**: ARIA labels, semantic HTML, keyboard navigation
+### Design Patterns
+
+- **Clean Separation**: Services → Contexts → Hooks → Components
+- **Single Responsibility**: Each hook manages one domain (auth, search, playlist)
+- **Context API**: Global state for authentication and notifications
+- **Custom Hooks**: Reusable business logic (`useAuth`, `useSearch`, `usePlaylist`)
+- **Error Boundary**: Graceful handling of component crashes
+- **AbortController**: Request cancellation prevents race conditions
+- **Memory Leak Prevention**: Proper cleanup in useEffect for timers and requests
+
+### Key Components
+
+- `AuthContext` - Global authentication state with token expiry monitoring
+- `ToastContext` - Global notification system
+- `useSearch` - Search with AbortController for rapid input
+- `usePlaylist` - Playlist management with validation
+- Service layer - Pure API interaction (`spotifyAuth.js`, `spotifyAPI.js`)
+
+### Accessibility
+
+- ARIA labels on all interactive elements
+- Semantic HTML structure
+- Keyboard navigation support
+- Screen reader friendly
 
 ## License
 
